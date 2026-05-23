@@ -115,12 +115,33 @@ export default function About() {
     <div className="pt-20 min-h-screen bg-background">
       {/* Hero */}
       <section className="bg-gradient-to-br from-secondary to-[hsl(173,60%,12%)] text-white py-20 px-4">
-        <div className="container mx-auto max-w-3xl text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">Profil Saya</Badge>
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">{profile.name}</h1>
-            <p className="text-primary text-xl font-semibold mb-4">{profile.tagline}</p>
-            <p className="text-slate-300 text-base max-w-xl mx-auto leading-relaxed">{profile.summary}</p>
+        <div className="container mx-auto max-w-3xl">
+          <motion.div
+            className="flex flex-col md:flex-row items-center gap-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Foto Profil */}
+            <div className="shrink-0">
+              <div className="relative w-40 h-40 md:w-52 md:h-52">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-primary/80 to-[hsl(173,80%,25%)] shadow-2xl shadow-primary/40" />
+                <div className="absolute inset-1 rounded-full overflow-hidden bg-gradient-to-b from-[hsl(173,60%,18%)] to-[hsl(173,60%,10%)]">
+                  <img
+                    src="/images/profile-nobg.png"
+                    alt="Asra Patrian"
+                    className="w-full h-full object-cover object-top scale-110"
+                  />
+                </div>
+              </div>
+            </div>
+            {/* Teks */}
+            <div className="text-center md:text-left">
+              <Badge className="mb-3 bg-primary/20 text-primary border-primary/30">Profil Saya</Badge>
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-3">{profile.name}</h1>
+              <p className="text-primary text-lg font-semibold mb-3">{profile.tagline}</p>
+              <p className="text-slate-300 text-sm leading-relaxed max-w-lg">{profile.summary}</p>
+            </div>
           </motion.div>
         </div>
       </section>

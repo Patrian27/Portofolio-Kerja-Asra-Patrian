@@ -35,6 +35,29 @@ export default function Home() {
         <div className="absolute top-1/3 right-0 w-[600px] h-[600px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 md:px-6 py-16 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          {/* Foto Profil */}
+          <motion.div
+            className="shrink-0 order-first lg:order-last"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            <div className="relative w-56 h-56 md:w-72 md:h-72">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-primary/80 to-[hsl(173,80%,25%)] shadow-2xl shadow-primary/40" />
+              <div className="absolute inset-1 rounded-full overflow-hidden bg-gradient-to-b from-[hsl(173,60%,18%)] to-[hsl(173,60%,10%)]">
+                <img
+                  src="/images/profile-nobg.png"
+                  alt="Asra Patrian"
+                  className="w-full h-full object-cover object-top scale-110"
+                />
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                8+ Tahun
+              </div>
+            </div>
+          </motion.div>
+
           <div className="max-w-2xl">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <Badge className="mb-6 bg-primary/20 text-primary border-primary/30 text-sm px-4 py-1.5 rounded-full">
@@ -120,6 +143,7 @@ export default function Home() {
               <span className="flex items-center gap-1.5"><Mail size={14} className="text-primary" />{profile.email}</span>
             </motion.div>
           </div>
+          </div>{/* end flex */}
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
