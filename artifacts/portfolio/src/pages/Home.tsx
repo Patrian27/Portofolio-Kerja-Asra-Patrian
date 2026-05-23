@@ -61,7 +61,7 @@ export default function Home() {
             </motion.h1>
 
             <motion.p
-              className="text-2xl text-primary font-semibold mb-5"
+              className="text-xl text-primary font-semibold mb-5"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.18 }}
@@ -70,7 +70,7 @@ export default function Home() {
             </motion.p>
 
             <motion.p
-              className="text-slate-300 text-base mb-8 leading-relaxed max-w-xl"
+              className="text-slate-300 text-base mb-6 leading-relaxed max-w-xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.25 }}
@@ -79,10 +79,23 @@ export default function Home() {
             </motion.p>
 
             <motion.div
+              className="flex flex-wrap gap-3 mb-8"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {profile.posisiDilamar.map((p) => (
+                <span key={p} className="bg-primary/20 text-primary border border-primary/30 text-sm px-3 py-1 rounded-full font-medium">
+                  Melamar: {p}
+                </span>
+              ))}
+            </motion.div>
+
+            <motion.div
               className="flex flex-wrap gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.32 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
             >
               <Link href="/dokumentasi">
                 <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/30">
@@ -100,7 +113,7 @@ export default function Home() {
               className="flex flex-wrap gap-5 mt-10 text-sm text-slate-400"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.45 }}
+              transition={{ delay: 0.48 }}
             >
               <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" />{profile.location}</span>
               <span className="flex items-center gap-1.5"><Phone size={14} className="text-primary" />{profile.phone}</span>
@@ -126,20 +139,20 @@ export default function Home() {
               {
                 cat: "cleaning",
                 title: "Cleaning Service",
-                desc: "Berpengalaman membersihkan gedung kantor, ruang rapat, toilet, lobi, dan area khusus. Mahir mengoperasikan mesin poles lantai.",
-                skills: ["Poles lantai marmer", "Pembersihan kaca", "Cuci karpet & sofa", "Sanitasi toilet"],
+                desc: "8+ tahun berpengalaman di lingkungan perbankan, perkantoran, dan transportasi publik. Mahir mengoperasikan mesin polisher, wet vacuum, dan peralatan kebersihan profesional.",
+                skills: ["Poles lantai (mesin polisher)", "Glass cleaning", "Toilet & floordrain cleaning", "Brushing & mopping"],
               },
               {
                 cat: "office-boy",
                 title: "Office Boy",
-                desc: "Siap mendukung operasional harian kantor mulai dari penyajian minuman, distribusi dokumen, hingga persiapan ruang meeting.",
-                skills: ["Penyajian minuman", "Distribusi dokumen", "Operasional fotokopi", "Persiapan rapat"],
+                desc: "Berpengalaman sebagai OB di PT Astra Auto Digital (SEVA). Terbiasa mendukung operasional harian kantor dan membantu kebutuhan pimpinan.",
+                skills: ["Persiapan ruang meeting", "Pengelolaan ATK", "Pelayanan karyawan & tamu", "Dusting & kebersihan kantor"],
               },
               {
                 cat: "messenger",
                 title: "Messenger / Kurir",
-                desc: "Berpengalaman mengantar surat, dokumen, dan paket ke berbagai lokasi di Jakarta dengan tepat waktu dan aman.",
-                skills: ["Pengiriman dokumen", "Rute efisien", "Tanda terima", "Laporan harian"],
+                desc: "Berpengalaman sebagai messenger di PT Bank Sumut, termasuk pengiriman dokumen ke Bank Indonesia. Siap mobile dan mengenal area lapangan.",
+                skills: ["Pengiriman dokumen rahasia", "Operasional mesin fotokopi", "Administrasi kantor", "Ketepatan waktu"],
               },
             ].map((item) => (
               <motion.div
@@ -179,6 +192,7 @@ export default function Home() {
             <div>
               <Badge className="mb-2 bg-primary/10 text-primary border-primary/20">Riwayat Kerja</Badge>
               <h2 className="text-3xl font-bold">Pengalaman Kerja</h2>
+              <p className="text-muted-foreground text-sm mt-1">8+ tahun di berbagai perusahaan terkemuka</p>
             </div>
             <Link href="/pengalaman">
               <Button variant="outline" className="rounded-full px-5 hidden md:flex">
@@ -207,7 +221,11 @@ export default function Home() {
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <h3 className="font-bold text-base">{exp.role}</h3>
-                      <p className="text-muted-foreground text-sm">{exp.company} &bull; {exp.location}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {exp.company}
+                        {exp.via && <span className="text-xs ml-1 text-muted-foreground/70">via {exp.via}</span>}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{exp.location}</p>
                     </div>
                     <Badge variant="outline" className="text-xs rounded-full shrink-0">{exp.period}</Badge>
                   </div>
@@ -231,7 +249,7 @@ export default function Home() {
             <div>
               <Badge className="mb-2 bg-primary/10 text-primary border-primary/20">Galeri</Badge>
               <h2 className="text-3xl font-bold">Dokumentasi Hasil Kerja</h2>
-              <p className="text-muted-foreground text-sm mt-1">Before, progress & after dari pekerjaan nyata saya</p>
+              <p className="text-muted-foreground text-sm mt-1">Foto nyata pekerjaan saya di lapangan</p>
             </div>
             <Link href="/dokumentasi">
               <Button variant="outline" className="rounded-full px-5 hidden md:flex">
@@ -258,21 +276,12 @@ export default function Home() {
                     src={doc.images.after}
                     alt={doc.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      const t = e.target as HTMLImageElement;
-                      t.src = `https://placehold.co/600x400/e2e8f0/94a3b8?text=Foto+${categoryLabel[doc.category]}`;
-                    }}
                   />
                   <div className="absolute top-3 left-3">
                     <Badge className={`text-xs rounded-full ${categoryColor[doc.category]}`}>
                       {categoryLabel[doc.category]}
                     </Badge>
                   </div>
-                  {(doc.images.before || doc.images.progress) && (
-                    <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
-                      Before & After
-                    </div>
-                  )}
                 </div>
                 <div className="p-5">
                   <h3 className="font-bold text-sm mb-1 group-hover:text-primary transition-colors">{doc.title}</h3>
@@ -292,38 +301,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial sederhana */}
+      {/* Testimoni */}
       <section className="py-20 bg-secondary text-white">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl text-center">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <div className="flex justify-center gap-1 mb-6">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} size={22} className="fill-primary text-primary" />
               ))}
             </div>
             <blockquote className="text-xl text-slate-200 leading-relaxed mb-8 italic">
-              "Asra adalah pekerja yang sangat rajin, disiplin, dan dapat diandalkan. Ia selalu menyelesaikan tugasnya dengan bersih dan tepat waktu. Kami sangat merekomendasikannya untuk posisi apapun."
+              "Asra adalah pekerja yang sangat rajin, disiplin, dan dapat diandalkan. Selalu menyelesaikan tugas dengan bersih, rapi, dan tepat waktu sesuai standar SOP yang ditetapkan."
             </blockquote>
             <div>
-              <p className="font-semibold text-white">Budi Hartono</p>
-              <p className="text-slate-400 text-sm">Supervisor, PT Graha Fajar Properti</p>
+              <p className="font-semibold text-white">Supervisor Operasional</p>
+              <p className="text-slate-400 text-sm">PT Usaha Mitra Sejahtera (Penempatan BCA)</p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Kontak */}
+      {/* CTA */}
       <section className="py-20 bg-primary text-center">
         <div className="container mx-auto px-4">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-3xl font-bold text-white mb-4">Tertarik Merekrut Saya?</h2>
             <p className="text-white/80 mb-8 max-w-md mx-auto">
-              Saya siap bergabung dan memberikan yang terbaik. Hubungi saya melalui WhatsApp atau lihat detail kontak saya.
+              Saya siap bergabung sebagai <strong>Office Boy</strong> atau <strong>Cleaning Service</strong> dan memberikan yang terbaik untuk perusahaan Anda.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
@@ -333,7 +337,7 @@ export default function Home() {
               </a>
               <Link href="/kontak">
                 <Button size="lg" variant="outline" className="rounded-full px-10 border-white text-white hover:bg-white/10">
-                  Lihat Kontak Lengkap
+                  Lihat Profil Lengkap
                 </Button>
               </Link>
             </div>

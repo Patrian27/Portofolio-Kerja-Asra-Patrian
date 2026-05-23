@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, Linkedin, CheckCircle2, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/data/data";
@@ -25,7 +25,34 @@ export default function About() {
         </div>
       </section>
 
-      {/* Profil Diri */}
+      {/* Posisi yang Dilamar */}
+      <section className="py-12 bg-primary/5 border-b border-primary/10">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div
+            className="flex flex-col md:flex-row items-center gap-4"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2.5 rounded-xl">
+                <Target size={22} className="text-primary" />
+              </div>
+              <span className="font-bold text-lg">Posisi yang Dilamar:</span>
+            </div>
+            <div className="flex gap-3 flex-wrap">
+              {profile.posisiDilamar.map((p) => (
+                <span key={p} className="bg-primary text-white text-sm font-semibold px-5 py-2 rounded-full shadow-md shadow-primary/20">
+                  {p}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Profil Diri & Data */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
           <motion.div
@@ -37,16 +64,19 @@ export default function About() {
           >
             <motion.div variants={fadeUp}>
               <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Tentang Saya</Badge>
-              <h2 className="text-3xl font-bold mb-5">Siapa Saya?</h2>
+              <h2 className="text-3xl font-bold mb-5">Profil Singkat</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Saya adalah {profile.name}, seorang tenaga kebersihan dan office support yang berpengalaman lebih dari 6 tahun. Saya pernah bekerja sebagai cleaning service, office boy, dan messenger di berbagai perusahaan di Jakarta.
+                  Saya adalah {profile.name}, seorang tenaga operasional berpengalaman lebih dari <strong className="text-foreground">8 tahun</strong> di bidang Cleaning Service, Office Boy, dan Messenger.
                 </p>
                 <p>
-                  Saya terbiasa bekerja di lingkungan kantor korporat yang menuntut standar kebersihan tinggi dan kedisiplinan. Saya bangga dengan setiap pekerjaan yang saya selesaikan dan selalu berusaha memberikan hasil terbaik.
+                  Saya memiliki komitmen tinggi terhadap kebersihan lingkungan kerja, pelayanan yang baik, serta siap ditempatkan sebagai <strong className="text-foreground">Office Boy maupun Cleaning Service</strong> sesuai kebutuhan perusahaan.
                 </p>
                 <p>
-                  Saat ini saya sedang mencari kesempatan baru untuk berkembang dan memberikan kontribusi terbaik saya kepada perusahaan yang membutuhkan tenaga yang handal, disiplin, dan bertanggung jawab.
+                  Selama berkarir, saya telah bekerja di lingkungan perbankan (BCA, Bank Sumut), perkantoran korporat (Astra Auto Digital/SEVA), dan transportasi publik (KCI). Pengalaman ini membentuk saya menjadi tenaga yang terbiasa dengan standar kerja tinggi.
+                </p>
+                <p>
+                  Saya memiliki kendaraan pribadi, SIM C aktif, dan siap bekerja secara mobile, shift, maupun ditempatkan di mana pun sesuai kebutuhan perusahaan.
                 </p>
               </div>
             </motion.div>
@@ -54,13 +84,15 @@ export default function About() {
             <motion.div variants={fadeUp}>
               <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Data Diri</Badge>
               <h2 className="text-3xl font-bold mb-5">Informasi Pribadi</h2>
-              <dl className="space-y-4">
+              <dl className="space-y-0">
                 {[
                   { label: "Nama Lengkap", value: profile.name },
                   { label: "Domisili", value: profile.location },
-                  { label: "Bidang Keahlian", value: "Cleaning Service, Office Boy, Messenger" },
-                  { label: "Lama Pengalaman", value: "6+ Tahun" },
+                  { label: "Posisi Dilamar", value: profile.posisiDilamar.join(", ") },
+                  { label: "Pengalaman", value: "8+ Tahun" },
                   { label: "Status", value: "Siap Bekerja (Available)" },
+                  { label: "Kendaraan", value: "Ada (SIM C Aktif)" },
+                  { label: "Sistem Kerja", value: "Siap mobile, shift, & penempatan" },
                 ].map((item) => (
                   <div key={item.label} className="flex gap-4 py-3 border-b border-border last:border-0">
                     <dt className="text-muted-foreground text-sm w-36 shrink-0">{item.label}</dt>
@@ -73,77 +105,80 @@ export default function About() {
         </div>
       </section>
 
-      {/* Kontak */}
-      <section className="py-20 bg-muted/30">
+      {/* Kompetensi Utama */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kompetensi</Badge>
+            <h2 className="text-3xl font-bold">Kompetensi Utama</h2>
+          </motion.div>
           <motion.div
-            variants={fadeUp}
+            className="grid grid-cols-1 md:grid-cols-2 gap-3"
+            variants={stagger}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center mb-12"
           >
+            {profile.skills.map((skill) => (
+              <motion.div
+                key={skill}
+                variants={fadeUp}
+                className="flex items-center gap-3 bg-card border border-card-border rounded-xl px-4 py-3"
+              >
+                <CheckCircle2 size={17} className="text-primary shrink-0" />
+                <span className="text-sm font-medium">{skill}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Kontak */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kontak</Badge>
             <h2 className="text-3xl font-bold">Hubungi Saya</h2>
-            <p className="text-muted-foreground mt-2">
-              Tertarik merekrut saya? Jangan ragu untuk menghubungi saya melalui kontak di bawah ini.
-            </p>
+            <p className="text-muted-foreground mt-2">Tertarik merekrut saya? Silakan hubungi melalui kontak di bawah ini.</p>
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"
             variants={stagger}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             {[
-              {
-                icon: Phone,
-                label: "Telepon / WhatsApp",
-                value: profile.phone,
-                href: `https://wa.me/${profile.phone.replace(/\D/g, "")}`,
-              },
-              {
-                icon: Mail,
-                label: "Email",
-                value: profile.email,
-                href: `mailto:${profile.email}`,
-              },
-              {
-                icon: MapPin,
-                label: "Lokasi",
-                value: profile.location,
-                href: null,
-              },
+              { icon: Phone, label: "WhatsApp", value: profile.phone, href: `https://wa.me/${profile.phone.replace(/\D/g, "")}` },
+              { icon: Mail, label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+              { icon: MapPin, label: "Domisili", value: profile.location, href: null },
+              { icon: Linkedin, label: "LinkedIn", value: "asra-patrian-b75b76320", href: profile.linkedin },
             ].map((item) => (
               <motion.div
                 key={item.label}
                 variants={fadeUp}
-                className="bg-card border border-card-border rounded-2xl p-6 text-center hover:shadow-md transition-all"
+                className="bg-card border border-card-border rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition-all"
               >
-                <div className="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-4">
-                  <item.icon size={22} className="text-primary" />
+                <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                  <item.icon size={20} className="text-primary" />
                 </div>
-                <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                {item.href ? (
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-sm hover:text-primary transition-colors">
-                    {item.value}
-                  </a>
-                ) : (
-                  <p className="font-semibold text-sm">{item.value}</p>
-                )}
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground mb-0.5">{item.label}</p>
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer"
+                      className="font-semibold text-sm hover:text-primary transition-colors truncate block">
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p className="font-semibold text-sm">{item.value}</p>
+                  )}
+                </div>
               </motion.div>
             ))}
           </motion.div>
 
-          <motion.div
-            className="text-center"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <motion.div className="text-center" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="rounded-full px-10 shadow-lg shadow-primary/20">
                 <MessageCircle size={18} className="mr-2" /> Chat via WhatsApp
@@ -153,13 +188,13 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA rekruter */}
+      {/* CTA */}
       <section className="py-20 bg-primary text-center">
         <div className="container mx-auto px-4">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-3xl font-bold text-white mb-4">Saya Siap Bergabung</h2>
             <p className="text-white/80 mb-8 max-w-md mx-auto">
-              Saya adalah pekerja keras, disiplin, dan bertanggung jawab. Mari berdiskusi tentang bagaimana saya bisa berkontribusi untuk perusahaan Anda.
+              Disiplin, bertanggung jawab, dan berpengalaman 8+ tahun. Mari berdiskusi bagaimana saya bisa berkontribusi untuk perusahaan Anda.
             </p>
             <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="rounded-full px-10 bg-white text-primary hover:bg-white/90 font-bold shadow-xl shadow-black/20">
