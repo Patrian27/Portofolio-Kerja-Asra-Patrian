@@ -61,7 +61,7 @@ export default function Home() {
           <div className="max-w-2xl">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <Badge className="mb-6 bg-primary/20 text-primary border-primary/30 text-sm px-4 py-1.5 rounded-full">
-                Portfolio Kerja Pribadi
+                Portofolio Kerja
               </Badge>
             </motion.div>
 

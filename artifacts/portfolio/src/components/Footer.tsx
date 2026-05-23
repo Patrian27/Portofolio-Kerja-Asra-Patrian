@@ -13,11 +13,11 @@ export function Footer() {
                 {profile.name.charAt(0)}
               </div>
               <span className="font-bold text-lg text-white">
-                {profile.name.split(" ")[0]}<span className="text-primary"> Portfolio</span>
+                {profile.name.split(" ")[0]}<span className="text-primary"> Portofolio</span>
               </span>
             </div>
             <p className="text-sm text-slate-400 mb-5 leading-relaxed">
-              Portfolio kerja pribadi {profile.name} — Cleaning Service, Office Boy & Messenger profesional.
+              Portofolio kerja {profile.name} — Cleaning Service, Office Boy & Messenger profesional.
             </p>
             <div className="flex gap-4">
               <a href="#" className="hover:text-primary transition-colors"><Instagram size={19} /></a>
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
-          <p>&copy; {new Date().getFullYear()} {profile.name}. Portfolio Kerja Pribadi.</p>
+          <p>&copy; {new Date().getFullYear()} {profile.name}. Portofolio Kerja.</p>
         </div>
       </div>
     </footer>

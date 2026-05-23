@@ -37,7 +37,7 @@ export function Navbar() {
               {profile.name.charAt(0)}
             </div>
             <span className={`font-bold text-lg tracking-tight ${isScrolled ? "text-secondary" : "text-white"}`}>
-              {firstName}<span className="text-primary"> Portfolio</span>
+              {firstName}<span className="text-primary"> Portofolio</span>
             </span>
           </Link>
 
