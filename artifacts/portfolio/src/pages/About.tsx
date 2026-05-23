@@ -84,10 +84,10 @@ const jobPlatforms = [
   {
     name: "JobStreet",
     username: "Asra Patrian",
-    href: null,
+    href: "https://id.jobstreet.com/id/profiles/asra-patrian-3FsszPRpW9",
     color: "bg-blue-50 border-blue-200 text-blue-700",
     iconBg: "bg-blue-600",
-    hasLink: false,
+    hasLink: true,
     logo: "JS",
   },
   {

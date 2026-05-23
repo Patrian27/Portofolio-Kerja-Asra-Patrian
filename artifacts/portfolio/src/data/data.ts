@@ -36,7 +36,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/asra-patrian-b75b76320",
   pintarnya: "https://pintarnya.com/cv/asra-patrian-j4697e7mxt",
   glints: "Asra Patrian",
-  jobstreet: "Asra Patrian",
+  jobstreet: "https://id.jobstreet.com/id/profiles/asra-patrian-3FsszPRpW9",
   kitalulus: "Asra Patrian",
   siapkerja: "Asra Patrian",
   instagram: "https://www.instagram.com/patrian27_",
