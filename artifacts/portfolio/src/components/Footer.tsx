@@ -1,75 +1,66 @@
 import { Link } from "wouter";
-import { Sparkles, Phone, Mail, MapPin, Instagram, Facebook, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Instagram, Facebook, Linkedin } from "lucide-react";
+import { profile } from "@/data/data";
 
 export function Footer() {
   return (
     <footer className="bg-secondary text-slate-300 py-12 border-t border-slate-800">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="bg-primary text-white p-1.5 rounded-md">
-                <Sparkles size={18} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="bg-primary text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-base">
+                {profile.name.charAt(0)}
               </div>
-              <span className="font-bold text-xl tracking-tight text-white">
-                Bersih<span className="text-primary">Klin</span>
+              <span className="font-bold text-lg text-white">
+                {profile.name.split(" ")[0]}<span className="text-primary"> Portfolio</span>
               </span>
-            </Link>
-            <p className="text-sm text-slate-400 mb-6">
-              Mitra terpercaya untuk layanan kebersihan profesional dan penyediaan tenaga office boy berpengalaman di Indonesia.
+            </div>
+            <p className="text-sm text-slate-400 mb-5 leading-relaxed">
+              Portfolio kerja pribadi {profile.name} — Cleaning Service, Office Boy & Messenger profesional.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-primary transition-colors"><Instagram size={20} /></a>
-              <a href="#" className="hover:text-primary transition-colors"><Facebook size={20} /></a>
-              <a href="#" className="hover:text-primary transition-colors"><Linkedin size={20} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Instagram size={19} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Facebook size={19} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Linkedin size={19} /></a>
             </div>
           </div>
-          
+
           <div>
-            <h4 className="text-white font-semibold mb-4">Tautan Cepat</h4>
+            <h4 className="text-white font-semibold mb-4">Navigasi</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="hover:text-primary transition-colors">Beranda</Link></li>
-              <li><Link href="/portfolio" className="hover:text-primary transition-colors">Portofolio Kerja</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Layanan Kami</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors">Tentang Perusahaan</Link></li>
+              <li><Link href="/dokumentasi" className="hover:text-primary transition-colors">Dokumentasi Kerja</Link></li>
+              <li><Link href="/pengalaman" className="hover:text-primary transition-colors">Pengalaman & Keahlian</Link></li>
+              <li><Link href="/kontak" className="hover:text-primary transition-colors">Profil & Kontak</Link></li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 className="text-white font-semibold mb-4">Layanan</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/services" className="hover:text-primary transition-colors">General Cleaning</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Deep Cleaning</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Penyediaan Office Boy</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Poles Lantai Marmer</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-semibold mb-4">Hubungi Kami</h4>
+            <h4 className="text-white font-semibold mb-4">Kontak Langsung</h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex gap-3">
-                <MapPin size={18} className="text-primary shrink-0" />
-                <span>Gedung Perkantoran Sudirman Lt. 12, Jakarta Selatan 12190</span>
+              <li className="flex gap-3 items-center">
+                <MapPin size={16} className="text-primary shrink-0" />
+                <span>{profile.location}</span>
               </li>
               <li className="flex gap-3 items-center">
-                <Phone size={18} className="text-primary shrink-0" />
-                <span>+62 812 3456 7890</span>
+                <Phone size={16} className="text-primary shrink-0" />
+                <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} className="hover:text-primary transition-colors">
+                  {profile.phone}
+                </a>
               </li>
               <li className="flex gap-3 items-center">
-                <Mail size={18} className="text-primary shrink-0" />
-                <span>halo@bersihklin.co.id</span>
+                <Mail size={16} className="text-primary shrink-0" />
+                <a href={`mailto:${profile.email}`} className="hover:text-primary transition-colors">
+                  {profile.email}
+                </a>
               </li>
             </ul>
           </div>
         </div>
-        
-        <div className="mt-12 pt-8 border-t border-slate-800 text-center text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>&copy; {new Date().getFullYear()} BersihKlin Indonesia. Hak Cipta Dilindungi.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
-            <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
-          </div>
+
+        <div className="mt-10 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
+          <p>&copy; {new Date().getFullYear()} {profile.name}. Portfolio Kerja Pribadi.</p>
         </div>
       </div>
     </footer>

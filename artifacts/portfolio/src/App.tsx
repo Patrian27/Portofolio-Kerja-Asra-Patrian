@@ -7,8 +7,8 @@ import { Footer } from "@/components/Footer";
 
 import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
-import Services from "@/pages/Services";
-import About from "@/pages/About";
+import Pengalaman from "@/pages/Services";
+import Kontak from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -20,9 +20,9 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/portfolio" component={Portfolio} />
-          <Route path="/services" component={Services} />
-          <Route path="/about" component={About} />
+          <Route path="/dokumentasi" component={Portfolio} />
+          <Route path="/pengalaman" component={Pengalaman} />
+          <Route path="/kontak" component={Kontak} />
           <Route component={NotFound} />
         </Switch>
       </main>

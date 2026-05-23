@@ -1,194 +1,199 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Sparkles, Users, Phone } from "lucide-react";
+import { CheckCircle2, Briefcase, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { services } from "@/data/data";
+import { experiences, profile } from "@/data/data";
 
-const cleaningServices = services.filter((s) => s.category === "cleaning");
-const obServices = services.filter((s) => s.category === "office-boy");
-
-const whyUs = [
+const skillGroups = [
   {
-    title: "Tim Bersertifikat",
-    desc: "Seluruh teknisi kami telah lulus pelatihan resmi dan bersertifikasi keahlian kebersihan profesional.",
-    icon: "🏅",
+    title: "Cleaning Service",
+    color: "bg-primary/10 text-primary border-primary/20",
+    skills: [
+      { name: "Poles Lantai Marmer & Granit", level: 95 },
+      { name: "Pembersihan Kaca & Partisi", level: 92 },
+      { name: "Cuci Karpet & Sofa", level: 88 },
+      { name: "Sanitasi & Disinfeksi", level: 90 },
+      { name: "Operasi Mesin Vakum & Scrubber", level: 85 },
+    ],
   },
   {
-    title: "Peralatan Modern",
-    desc: "Kami menggunakan mesin dan cairan pembersih berstandar industri untuk hasil optimal.",
-    icon: "🔧",
+    title: "Office Boy",
+    color: "bg-secondary/10 text-secondary border-secondary/20",
+    skills: [
+      { name: "Penyajian & Manajemen Minuman", level: 97 },
+      { name: "Distribusi Dokumen", level: 95 },
+      { name: "Operasional Mesin Fotokopi & Scan", level: 90 },
+      { name: "Persiapan Ruang Rapat", level: 93 },
+      { name: "Pelayanan Tamu Kantor", level: 88 },
+    ],
   },
   {
-    title: "Tepat Waktu",
-    desc: "Kami berkomitmen menyelesaikan pekerjaan sesuai jadwal yang disepakati tanpa penundaan.",
-    icon: "⏰",
-  },
-  {
-    title: "Terjamin & Bergaransi",
-    desc: "Setiap pekerjaan bergaransi kepuasan — jika tidak puas, kami siap mengulang tanpa biaya tambahan.",
-    icon: "🛡️",
+    title: "Messenger / Kurir",
+    color: "bg-amber-100 text-amber-700 border-amber-200",
+    skills: [
+      { name: "Pengiriman Dokumen Tepat Waktu", level: 98 },
+      { name: "Navigasi & Rute Efisien", level: 92 },
+      { name: "Administrasi Pengiriman", level: 87 },
+      { name: "Penanganan Dokumen Rahasia", level: 93 },
+      { name: "Komunikasi & Koordinasi", level: 90 },
+    ],
   },
 ];
 
-const addOns = [
-  "Poles lantai marmer & granit",
-  "Cuci karpet & sofa",
-  "Fogging & disinfeksi",
-  "Pembersihan AC",
-  "Cuci kaca eksterior gedung",
-  "Pengiriman dokumen antar lantai",
+const certifications = [
+  "Sertifikat Pelatihan K3 (Keselamatan & Kesehatan Kerja)",
+  "Sertifikat Pelatihan Cleaning Profesional dari APKLI",
+  "Sertifikat Layanan Prima (Service Excellence)",
+  "BPJS Ketenagakerjaan Aktif",
 ];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
-const stagger = {
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-function ServiceCard({ service }: { service: typeof services[0] }) {
+function SkillBar({ name, level }: { name: string; level: number }) {
   return (
-    <motion.div
-      variants={fadeUp}
-      className="bg-card border border-card-border rounded-2xl overflow-hidden hover:shadow-xl transition-all group"
-      data-testid={`card-service-${service.id}`}
-    >
-      <div className="h-2 w-full bg-gradient-to-r from-primary to-[hsl(173,80%,45%)]" />
-      <div className="p-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary transition-all">
-            {service.category === "cleaning" ? (
-              <Sparkles size={22} className="text-primary group-hover:text-white transition-colors" />
-            ) : (
-              <Users size={22} className="text-primary group-hover:text-white transition-colors" />
-            )}
-          </div>
-          <h3 className="text-xl font-bold">{service.title}</h3>
-        </div>
-
-        <p className="text-muted-foreground text-sm mb-6 leading-relaxed">{service.description}</p>
-
-        <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Termasuk:</h4>
-        <ul className="space-y-2 mb-6">
-          {service.includes.map((item) => (
-            <li key={item} className="flex items-center gap-2.5 text-sm">
-              <CheckCircle2 size={16} className="text-primary shrink-0" />
-              {item}
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex items-center justify-between pt-5 border-t border-card-border">
-          <div>
-            <div className="text-xs text-muted-foreground mb-0.5">Mulai dari</div>
-            <div className="text-lg font-bold text-primary">{service.priceRange.replace("Mulai dari ", "")}</div>
-          </div>
-          <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">
-            <Button size="sm" className="rounded-full px-5">
-              Konsultasi
-            </Button>
-          </a>
-        </div>
+    <div>
+      <div className="flex justify-between text-sm mb-1.5">
+        <span className="font-medium">{name}</span>
+        <span className="text-muted-foreground text-xs">{level}%</span>
       </div>
-    </motion.div>
+      <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <motion.div
+          className="h-full bg-primary rounded-full"
+          initial={{ width: 0 }}
+          whileInView={{ width: `${level}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+        />
+      </div>
+    </div>
   );
 }
 
-export default function Services() {
+export default function Pengalaman() {
   return (
     <div className="pt-20 min-h-screen bg-background">
       {/* Hero */}
       <section className="bg-gradient-to-br from-secondary to-[hsl(173,60%,12%)] text-white py-20 px-4">
         <div className="container mx-auto max-w-3xl text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">Layanan</Badge>
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Solusi Kebersihan & Office Support</h1>
+            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">Riwayat & Keahlian</Badge>
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Pengalaman & Keahlian</h1>
             <p className="text-slate-300 text-lg max-w-xl mx-auto">
-              Pilih layanan yang sesuai dengan kebutuhan kantor Anda. Semua tersedia dengan harga transparan dan tim profesional.
+              Lebih dari 6 tahun pengalaman di bidang cleaning service, office boy, dan messenger di berbagai perusahaan.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Cleaning Services */}
+      {/* Pengalaman Kerja Detail */}
       <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <motion.div
-            className="flex items-center gap-3 mb-10"
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
+            className="mb-10"
           >
-            <div className="p-2.5 bg-primary/10 rounded-xl">
-              <Sparkles size={24} className="text-primary" />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold">Cleaning Service</h2>
-              <p className="text-muted-foreground text-sm mt-0.5">Layanan kebersihan profesional untuk berbagai kebutuhan</p>
-            </div>
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Riwayat Kerja</Badge>
+            <h2 className="text-3xl font-bold">Pengalaman Kerja</h2>
           </motion.div>
+
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="space-y-6"
             variants={stagger}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {cleaningServices.map((s) => <ServiceCard key={s.id} service={s} />)}
+            {experiences.map((exp, idx) => (
+              <motion.div
+                key={exp.id}
+                variants={fadeUp}
+                className="bg-card border border-card-border rounded-2xl p-7 hover:shadow-lg transition-all"
+                data-testid={`card-exp-${idx}`}
+              >
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                    <Briefcase size={22} className="text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <h3 className="text-xl font-bold">{exp.role}</h3>
+                        <p className="text-muted-foreground">{exp.company} &bull; {exp.location}</p>
+                      </div>
+                      <Badge variant="outline" className="rounded-full shrink-0">{exp.period}</Badge>
+                    </div>
+                  </div>
+                </div>
+                <ul className="space-y-2.5">
+                  {exp.responsibilities.map((r) => (
+                    <li key={r} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                      <CheckCircle2 size={15} className="text-primary shrink-0 mt-0.5" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Office Boy Services */}
+      {/* Skills */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
-            className="flex items-center gap-3 mb-10"
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
+            className="text-center mb-12"
           >
-            <div className="p-2.5 bg-secondary/10 rounded-xl">
-              <Users size={24} className="text-secondary" />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold">Office Boy</h2>
-              <p className="text-muted-foreground text-sm mt-0.5">Staf terlatih untuk mendukung operasional kantor harian Anda</p>
-            </div>
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kompetensi</Badge>
+            <h2 className="text-3xl font-bold">Tingkat Keahlian</h2>
           </motion.div>
+
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
             variants={stagger}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {obServices.map((s) => <ServiceCard key={s.id} service={s} />)}
+            {skillGroups.map((group) => (
+              <motion.div
+                key={group.title}
+                variants={fadeUp}
+                className="bg-card border border-card-border rounded-2xl p-7"
+              >
+                <Badge className={`mb-5 ${group.color}`}>{group.title}</Badge>
+                <div className="space-y-4">
+                  {group.skills.map((s) => (
+                    <SkillBar key={s.name} name={s.name} level={s.level} />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Add-on Services */}
+      {/* Soft Skills */}
       <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl text-center">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">Layanan Tambahan</Badge>
-            <h2 className="text-3xl font-bold mb-3">Layanan Spesial & Add-On</h2>
-            <p className="text-muted-foreground mb-10">Tersedia sebagai layanan tambahan ataupun paket mandiri. Hubungi kami untuk harga.</p>
+        <div className="container mx-auto px-4 md:px-6 max-w-2xl text-center">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Karakter</Badge>
+            <h2 className="text-3xl font-bold mb-8">Soft Skills</h2>
             <div className="flex flex-wrap justify-center gap-3">
-              {addOns.map((item) => (
-                <div key={item} className="flex items-center gap-2 bg-card border border-card-border rounded-full px-4 py-2 text-sm font-medium">
-                  <CheckCircle2 size={15} className="text-primary" />
-                  {item}
+              {profile.softSkills.map((s) => (
+                <div key={s} className="flex items-center gap-2 bg-card border border-card-border rounded-full px-4 py-2 text-sm font-medium">
+                  <Star size={14} className="text-primary fill-primary" />
+                  {s}
                 </div>
               ))}
             </div>
@@ -196,56 +201,25 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Why Us */}
+      {/* Sertifikasi */}
       <section className="py-20 bg-secondary text-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <motion.div
-            className="text-center mb-12"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <Badge className="mb-3 bg-primary/20 text-primary border-primary/30">Keunggulan Kami</Badge>
-            <h2 className="text-3xl font-bold text-white">Mengapa Memilih BersihKlin?</h2>
+        <div className="container mx-auto px-4 md:px-6 max-w-2xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-10">
+            <Badge className="mb-3 bg-primary/20 text-primary border-primary/30">Sertifikasi</Badge>
+            <h2 className="text-3xl font-bold text-white">Sertifikat & Pelatihan</h2>
           </motion.div>
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {whyUs.map((item) => (
-              <motion.div
-                key={item.title}
+          <motion.ul className="space-y-4" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            {certifications.map((cert) => (
+              <motion.li
+                key={cert}
                 variants={fadeUp}
-                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors text-center"
+                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-4"
               >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
-              </motion.div>
+                <CheckCircle2 size={20} className="text-primary shrink-0" />
+                <span className="text-slate-200 text-sm">{cert}</span>
+              </motion.li>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 bg-primary text-center">
-        <div className="container mx-auto px-4">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <Phone size={44} className="mx-auto mb-5 text-white/80" />
-            <h2 className="text-3xl font-bold text-white mb-4">Dapatkan Penawaran Khusus Hari Ini</h2>
-            <p className="text-white/80 mb-8 max-w-md mx-auto">
-              Konsultasikan kebutuhan Anda dengan tim kami dan dapatkan penawaran terbaik sesuai anggaran.
-            </p>
-            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="rounded-full px-10 bg-white text-primary hover:bg-white/90 font-bold shadow-xl shadow-black/20">
-                Hubungi via WhatsApp
-              </Button>
-            </a>
-          </motion.div>
+          </motion.ul>
         </div>
       </section>
     </div>

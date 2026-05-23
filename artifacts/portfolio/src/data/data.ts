@@ -1,9 +1,10 @@
-export type ServiceCategory = "cleaning" | "office-boy" | "all";
+export type WorkCategory = "cleaning" | "office-boy" | "messenger";
 
-export interface Project {
+export interface WorkDoc {
   id: string;
   title: string;
-  category: ServiceCategory;
+  category: WorkCategory;
+  company: string;
   location: string;
   date: string;
   description: string;
@@ -14,113 +15,171 @@ export interface Project {
   };
 }
 
-export const projects: Project[] = [
+export interface Experience {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  location: string;
+  responsibilities: string[];
+}
+
+export const profile = {
+  name: "Asra Patrian",
+  tagline: "Tenaga Kebersihan & Office Support Profesional",
+  summary:
+    "Berpengalaman di bidang cleaning service, office boy, dan messenger. Terbiasa bekerja di lingkungan kantor korporat, berkomitmen menjaga kebersihan, ketertiban, dan kelancaran operasional. Siap bekerja keras, disiplin, dan bertanggung jawab.",
+  phone: "+62 812 0000 0000",
+  email: "asra.patrian@email.com",
+  location: "Jakarta",
+  skills: [
+    "Pembersihan lantai & kaca",
+    "Pengoperasian mesin poles",
+    "Manajemen pantry & dapur",
+    "Distribusi dokumen",
+    "Pengiriman barang & surat",
+    "Penggunaan mesin fotokopi",
+    "Pelayanan tamu & telepon",
+    "Keselamatan & K3",
+  ],
+  softSkills: [
+    "Disiplin & tepat waktu",
+    "Dapat bekerja dalam tim",
+    "Komunikasi yang baik",
+    "Jujur & bertanggung jawab",
+    "Inisiatif & proaktif",
+  ],
+};
+
+export const experiences: Experience[] = [
   {
-    id: "proj-1",
-    title: "Pembersihan Menyeluruh Kantor Sudirman",
-    category: "cleaning",
-    location: "Sudirman, Jakarta Selatan",
-    date: "Oktober 2023",
-    description: "Deep cleaning untuk kantor berukuran 500m2, mencakup poles lantai marmer, cuci karpet, dan pembersihan kaca fasad interior.",
-    images: {
-      before: "/images/floor-before.png",
-      progress: "/images/progress.png",
-      after: "/images/floor-after.png",
-    }
+    id: "exp-1",
+    role: "Cleaning Service",
+    company: "PT Graha Fajar Properti",
+    period: "2022 – 2024",
+    location: "Jakarta Selatan",
+    responsibilities: [
+      "Membersihkan area kantor seluas 1.000 m2 setiap hari",
+      "Mengoperasikan mesin poles lantai marmer dan granit",
+      "Mencuci dan merawat kaca partisi serta fasad interior",
+      "Mengelola stok peralatan kebersihan",
+      "Mendisinfeksi toilet dan pantai setiap shift",
+    ],
   },
   {
-    id: "proj-2",
-    title: "Support Event & Manajemen Pantry",
-    category: "office-boy",
-    location: "Kuningan, Jakarta Selatan",
-    date: "November 2023",
-    description: "Penyediaan tenaga Office Boy profesional untuk mendukung acara RUPS tahunan perusahaan multinasional.",
-    images: {
-      after: "/images/office-boy.png",
-    }
+    id: "exp-2",
+    role: "Office Boy",
+    company: "PT Sinar Maju Teknologi",
+    period: "2020 – 2022",
+    location: "Jakarta Pusat",
+    responsibilities: [
+      "Menyiapkan dan menyajikan minuman untuk tamu dan karyawan",
+      "Mendistribusikan dokumen antar departemen dan antar lantai",
+      "Mengoperasikan mesin fotokopi, scan, dan fax",
+      "Mengelola kebersihan ruang rapat sebelum dan sesudah dipakai",
+      "Membantu persiapan event internal kantor",
+    ],
   },
   {
-    id: "proj-3",
-    title: "Cuci Sofa & Karpet Ruang Direksi",
-    category: "cleaning",
-    location: "Thamrin, Jakarta Pusat",
-    date: "Desember 2023",
-    description: "Pembersihan intensif untuk menghilangkan noda membandel pada sofa kulit dan karpet tebal di area VIP.",
-    images: {
-      before: "/images/floor-before.png",
-      after: "/images/floor-after.png",
-    }
+    id: "exp-3",
+    role: "Messenger / Kurir Kantor",
+    company: "CV Harapan Baru Logistik",
+    period: "2018 – 2020",
+    location: "Jakarta",
+    responsibilities: [
+      "Mengantar surat, dokumen, dan paket ke berbagai instansi di Jakarta",
+      "Memastikan setiap pengiriman tepat waktu dan diterima oleh pihak yang benar",
+      "Membuat laporan pengiriman harian dan mingguan",
+      "Mengelola rute pengiriman yang efisien",
+      "Menangani tanda terima dan bukti pengiriman",
+    ],
   },
-  {
-    id: "proj-4",
-    title: "Operasional Harian Startup Tech",
-    category: "office-boy",
-    location: "BSD City, Tangerang",
-    date: "Januari 2024",
-    description: "Penempatan 3 staf Office Boy untuk melayani kebutuhan harian 150 karyawan, termasuk manajemen dokumen dan kurir.",
-    images: {
-      progress: "/images/office-boy.png",
-      after: "/images/office-boy.png",
-    }
-  },
-  {
-    id: "proj-5",
-    title: "General Cleaning Gedung Baru",
-    category: "cleaning",
-    location: "Gatot Subroto, Jakarta Selatan",
-    date: "Februari 2024",
-    description: "Pembersihan menyeluruh pasca-renovasi sebelum serah terima kepada penyewa (post-construction cleaning).",
-    images: {
-      before: "/images/floor-before.png",
-      progress: "/images/progress.png",
-      after: "/images/hero.png",
-    }
-  },
-  {
-    id: "proj-6",
-    title: "Perawatan Kaca & Fasad Interior",
-    category: "cleaning",
-    location: "TB Simatupang, Jakarta",
-    date: "Maret 2024",
-    description: "Pembersihan rutin kaca partisi ruangan rapat dan lobi utama agar selalu tampil jernih dan representatif.",
-    images: {
-      before: "/images/floor-before.png",
-      after: "/images/hero.png",
-    }
-  }
 ];
 
-export const services = [
+export const workDocs: WorkDoc[] = [
   {
-    id: "deep-cleaning",
-    title: "Deep Cleaning Service",
+    id: "doc-1",
+    title: "Pembersihan Ruang Rapat Lantai 5",
     category: "cleaning",
-    description: "Pembersihan detail dan menyeluruh hingga ke area yang sulit dijangkau. Ideal untuk kantor baru atau pembersihan tahunan.",
-    includes: ["Poles lantai", "Pembersihan jendela", "Cuci karpet/sofa", "Disinfeksi ruangan"],
-    priceRange: "Mulai dari Rp 15.000 / m2"
+    company: "PT Graha Fajar Properti",
+    location: "Jakarta Selatan",
+    date: "Maret 2024",
+    description:
+      "Pembersihan menyeluruh ruang rapat kapasitas 30 orang setelah acara besar. Termasuk cuci karpet, lap meja, dan poles lantai.",
+    images: {
+      before: "/images/floor-before.png",
+      progress: "/images/progress.png",
+      after: "/images/floor-after.png",
+    },
   },
   {
-    id: "daily-cleaning",
-    title: "Daily Office Cleaning",
-    category: "cleaning",
-    description: "Layanan pembersihan harian rutin untuk menjaga kenyamanan dan produktivitas lingkungan kerja Anda.",
-    includes: ["Sapu & pel lantai", "Buang sampah", "Lap meja & debu", "Pembersihan toilet"],
-    priceRange: "Mulai dari Rp 3.500.000 / bulan"
-  },
-  {
-    id: "office-boy",
-    title: "Penyediaan Office Boy",
+    id: "doc-2",
+    title: "Distribusi Dokumen Antar Departemen",
     category: "office-boy",
-    description: "Staf terlatih, berseragam rapi, dan profesional untuk membantu operasional harian kantor Anda.",
-    includes: ["Penyajian minuman", "Manajemen pantry", "Distribusi dokumen", "Kurir & errand"],
-    priceRange: "Mulai dari Rp 4.200.000 / bulan"
+    company: "PT Sinar Maju Teknologi",
+    location: "Jakarta Pusat",
+    date: "Januari 2022",
+    description:
+      "Mendistribusikan lebih dari 200 lembar dokumen penting ke 8 departemen berbeda dalam satu hari kerja.",
+    images: {
+      after: "/images/office-boy.png",
+    },
   },
   {
-    id: "specialized",
-    title: "Pembersihan Khusus",
+    id: "doc-3",
+    title: "Deep Cleaning Lobi Utama",
     category: "cleaning",
-    description: "Layanan pembersihan spesifik untuk material tertentu yang membutuhkan penanganan khusus.",
-    includes: ["Cuci lampu kristal", "Perawatan marmer", "Cuci blind/gorden", "Fogging anti-hama"],
-    priceRange: "Sesuai survey lokasi"
-  }
+    company: "PT Graha Fajar Properti",
+    location: "Jakarta Selatan",
+    date: "Februari 2024",
+    description:
+      "Pembersihan menyeluruh lobi utama gedung termasuk poles lantai marmer dan pembersihan kaca fasad interior setinggi 4 meter.",
+    images: {
+      before: "/images/floor-before.png",
+      after: "/images/floor-after.png",
+    },
+  },
+  {
+    id: "doc-4",
+    title: "Pengiriman Dokumen Lintas Kota",
+    category: "messenger",
+    company: "CV Harapan Baru Logistik",
+    location: "Jakarta – Bekasi",
+    date: "Oktober 2019",
+    description:
+      "Mengantarkan dokumen legal dan kontrak penting ke 5 titik di Jakarta dan Bekasi dalam satu hari, semua tepat waktu.",
+    images: {
+      progress: "/images/office-boy.png",
+      after: "/images/hero.png",
+    },
+  },
+  {
+    id: "doc-5",
+    title: "Persiapan Ruang Event Internal",
+    category: "office-boy",
+    company: "PT Sinar Maju Teknologi",
+    location: "Jakarta Pusat",
+    date: "Agustus 2021",
+    description:
+      "Mempersiapkan ruang auditorium untuk acara townhall tahunan 200+ karyawan: meja, kursi, sound, dan konsumsi.",
+    images: {
+      before: "/images/floor-before.png",
+      progress: "/images/progress.png",
+      after: "/images/hero.png",
+    },
+  },
+  {
+    id: "doc-6",
+    title: "Pembersihan Toilet & Area Pantry",
+    category: "cleaning",
+    company: "PT Graha Fajar Properti",
+    location: "Jakarta Selatan",
+    date: "April 2023",
+    description:
+      "Pembersihan dan sanitasi rutin toilet dan pantry 3 lantai setiap shift untuk memastikan standar kebersihan terjaga.",
+    images: {
+      before: "/images/floor-before.png",
+      after: "/images/floor-after.png",
+    },
+  },
 ];
