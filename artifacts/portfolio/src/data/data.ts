@@ -29,9 +29,9 @@ export const profile = {
   tagline: "Tenaga Kebersihan & Office Support Profesional",
   summary:
     "Berpengalaman di bidang cleaning service, office boy, dan messenger. Terbiasa bekerja di lingkungan kantor korporat, berkomitmen menjaga kebersihan, ketertiban, dan kelancaran operasional. Siap bekerja keras, disiplin, dan bertanggung jawab.",
-  phone: "+62 812 0000 0000",
-  email: "asra.patrian@email.com",
-  location: "Jakarta",
+  phone: "+62 899 7706 751",
+  email: "rasamjupatrian97@gmail.com",
+  location: "Bogor",
   skills: [
     "Pembersihan lantai & kaca",
     "Pengoperasian mesin poles",
