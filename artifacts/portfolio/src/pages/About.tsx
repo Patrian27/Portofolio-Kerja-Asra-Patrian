@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, MessageCircle, Linkedin, CheckCircle2, Target, ExternalLink } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, CheckCircle2, Target, ExternalLink, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/data/data";
@@ -9,6 +9,49 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
+
+const socialMedia = [
+  {
+    name: "Instagram",
+    username: "@patrian27_",
+    href: "https://www.instagram.com/patrian27_",
+    color: "bg-pink-50 border-pink-200 text-pink-700",
+    iconBg: "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400",
+    logo: "IG",
+  },
+  {
+    name: "TikTok",
+    username: "@patrian27_",
+    href: "https://www.tiktok.com/@patrian27_",
+    color: "bg-slate-50 border-slate-200 text-slate-700",
+    iconBg: "bg-black",
+    logo: "TT",
+  },
+  {
+    name: "Facebook",
+    username: "Asra Patrian",
+    href: "https://www.facebook.com/profile.php?id=61554212107923",
+    color: "bg-blue-50 border-blue-200 text-blue-700",
+    iconBg: "bg-[#1877F2]",
+    logo: "FB",
+  },
+  {
+    name: "Telegram",
+    username: "08997706751",
+    href: "https://t.me/08997706751",
+    color: "bg-sky-50 border-sky-200 text-sky-700",
+    iconBg: "bg-[#26A5E4]",
+    logo: "TG",
+  },
+  {
+    name: "WhatsApp",
+    username: "+62 899 7706 751",
+    href: "https://wa.me/6289977067551",
+    color: "bg-green-50 border-green-200 text-green-700",
+    iconBg: "bg-[#25D366]",
+    logo: "WA",
+  },
+];
 
 const jobPlatforms = [
   {
@@ -159,6 +202,45 @@ export default function About() {
                 <MessageCircle size={18} className="mr-2" /> Chat via WhatsApp
               </Button>
             </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Media Sosial */}
+      <section className="py-16 bg-muted/20">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-8">
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Media Sosial</Badge>
+            <h2 className="text-3xl font-bold">Ikuti Saya</h2>
+            <p className="text-muted-foreground text-sm mt-1">Terhubung dengan saya di media sosial</p>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {socialMedia.map((item) => (
+              <motion.a
+                key={item.name}
+                variants={fadeUp}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`border rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer ${item.color}`}
+              >
+                <div className={`${item.iconBg} text-white text-xs font-bold w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm`}>
+                  {item.logo}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm">{item.name}</p>
+                  <p className="text-xs opacity-70 truncate">{item.username}</p>
+                </div>
+                <ExternalLink size={15} className="shrink-0 opacity-50" />
+              </motion.a>
+            ))}
           </motion.div>
         </div>
       </section>

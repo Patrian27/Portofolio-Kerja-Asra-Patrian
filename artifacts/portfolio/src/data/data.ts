@@ -39,6 +39,10 @@ export const profile = {
   jobstreet: "Asra Patrian",
   kitalulus: "Asra Patrian",
   siapkerja: "Asra Patrian",
+  instagram: "https://www.instagram.com/patrian27_",
+  tiktok: "https://www.tiktok.com/@patrian27_",
+  telegram: "https://t.me/08997706751",
+  facebook: "https://www.facebook.com/profile.php?id=61554212107923",
   posisiDilamar: ["Office Boy (OB)", "Cleaning Service"],
   skills: [
     "Cleaning Service & Housekeeping",
