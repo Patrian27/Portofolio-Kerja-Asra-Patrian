@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, MessageCircle, Linkedin, CheckCircle2, Target } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, Linkedin, CheckCircle2, Target, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/data/data";
@@ -8,7 +8,64 @@ const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
-const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
+
+const jobPlatforms = [
+  {
+    name: "LinkedIn",
+    username: "asra-patrian-b75b76320",
+    href: "https://www.linkedin.com/in/asra-patrian-b75b76320",
+    color: "bg-[#0A66C2]/10 border-[#0A66C2]/20 text-[#0A66C2]",
+    iconBg: "bg-[#0A66C2]",
+    hasLink: true,
+    logo: "LI",
+  },
+  {
+    name: "Pintarnya",
+    username: "asra-patrian",
+    href: "https://pintarnya.com/cv/asra-patrian-j4697e7mxt",
+    color: "bg-orange-50 border-orange-200 text-orange-700",
+    iconBg: "bg-orange-500",
+    hasLink: true,
+    logo: "PT",
+  },
+  {
+    name: "Glints",
+    username: "Asra Patrian",
+    href: null,
+    color: "bg-emerald-50 border-emerald-200 text-emerald-700",
+    iconBg: "bg-emerald-500",
+    hasLink: false,
+    logo: "GL",
+  },
+  {
+    name: "JobStreet",
+    username: "Asra Patrian",
+    href: null,
+    color: "bg-blue-50 border-blue-200 text-blue-700",
+    iconBg: "bg-blue-600",
+    hasLink: false,
+    logo: "JS",
+  },
+  {
+    name: "Kita Lulus",
+    username: "Asra Patrian",
+    href: null,
+    color: "bg-purple-50 border-purple-200 text-purple-700",
+    iconBg: "bg-purple-600",
+    hasLink: false,
+    logo: "KL",
+  },
+  {
+    name: "Siap Kerja ID",
+    username: "Asra Patrian",
+    href: null,
+    color: "bg-rose-50 border-rose-200 text-rose-700",
+    iconBg: "bg-rose-500",
+    hasLink: false,
+    logo: "SK",
+  },
+];
 
 export default function About() {
   return (
@@ -26,7 +83,7 @@ export default function About() {
       </section>
 
       {/* Posisi yang Dilamar */}
-      <section className="py-12 bg-primary/5 border-b border-primary/10">
+      <section className="py-10 bg-primary/5 border-b border-primary/10">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <motion.div
             className="flex flex-col md:flex-row items-center gap-4"
@@ -52,8 +109,115 @@ export default function About() {
         </div>
       </section>
 
-      {/* Profil Diri & Data */}
-      <section className="py-20 bg-background">
+      {/* Kontak Langsung */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-8">
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kontak</Badge>
+            <h2 className="text-3xl font-bold">Hubungi Langsung</h2>
+            <p className="text-muted-foreground text-sm mt-1">Cara tercepat menghubungi saya</p>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {[
+              { icon: Phone, label: "WhatsApp", value: profile.phone, href: `https://wa.me/${profile.phone.replace(/\D/g, "")}` },
+              { icon: Mail, label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+              { icon: MapPin, label: "Domisili", value: profile.location, href: null },
+            ].map((item) => (
+              <motion.div
+                key={item.label}
+                variants={fadeUp}
+                className="bg-card border border-card-border rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition-all"
+              >
+                <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                  <item.icon size={20} className="text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground mb-0.5">{item.label}</p>
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer"
+                      className="font-semibold text-sm hover:text-primary transition-colors truncate block">
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p className="font-semibold text-sm">{item.value}</p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div className="flex justify-center" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="rounded-full px-10 shadow-lg shadow-primary/20">
+                <MessageCircle size={18} className="mr-2" /> Chat via WhatsApp
+              </Button>
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Platform Melamar Kerja */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-8">
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Platform Kerja</Badge>
+            <h2 className="text-3xl font-bold">Temukan Saya Di</h2>
+            <p className="text-muted-foreground text-sm mt-1">Profil saya tersedia di berbagai platform lowongan kerja</p>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {jobPlatforms.map((platform) => (
+              <motion.div
+                key={platform.name}
+                variants={fadeUp}
+                className={`border rounded-2xl p-5 flex items-center gap-4 transition-all ${platform.color} ${platform.hasLink ? "hover:shadow-md" : ""}`}
+              >
+                <div className={`${platform.iconBg} text-white text-xs font-bold w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm`}>
+                  {platform.logo}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm">{platform.name}</p>
+                  <p className="text-xs opacity-80 truncate">{platform.username}</p>
+                </div>
+                {platform.hasLink && platform.href ? (
+                  <a href={platform.href} target="_blank" rel="noopener noreferrer"
+                    className="shrink-0 opacity-70 hover:opacity-100 transition-opacity">
+                    <ExternalLink size={16} />
+                  </a>
+                ) : (
+                  <span className="text-xs opacity-50 shrink-0 bg-black/5 px-2 py-1 rounded-full">Cari manual</span>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.p
+            className="text-xs text-muted-foreground text-center mt-5"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            * Platform yang bertanda "Cari manual" belum memiliki link langsung — cari nama <strong>Asra Patrian</strong> di platform tersebut.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Profil Singkat */}
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
           <motion.div
             className="grid md:grid-cols-2 gap-12 items-start"
@@ -70,10 +234,10 @@ export default function About() {
                   Saya adalah {profile.name}, seorang tenaga operasional berpengalaman lebih dari <strong className="text-foreground">8 tahun</strong> di bidang Cleaning Service, Office Boy, dan Messenger.
                 </p>
                 <p>
-                  Saya memiliki komitmen tinggi terhadap kebersihan lingkungan kerja, pelayanan yang baik, serta siap ditempatkan sebagai <strong className="text-foreground">Office Boy maupun Cleaning Service</strong> sesuai kebutuhan perusahaan.
+                  Saya memiliki komitmen tinggi terhadap kebersihan lingkungan kerja dan siap ditempatkan sebagai <strong className="text-foreground">Office Boy maupun Cleaning Service</strong> sesuai kebutuhan perusahaan.
                 </p>
                 <p>
-                  Selama berkarir, saya telah bekerja di lingkungan perbankan (BCA, Bank Sumut), perkantoran korporat (Astra Auto Digital/SEVA), dan transportasi publik (KCI). Pengalaman ini membentuk saya menjadi tenaga yang terbiasa dengan standar kerja tinggi.
+                  Selama berkarir, saya telah bekerja di lingkungan perbankan (BCA, Bank Sumut), perkantoran korporat (Astra Auto Digital/SEVA), dan transportasi publik (KCI).
                 </p>
                 <p>
                   Saya memiliki kendaraan pribadi, SIM C aktif, dan siap bekerja secara mobile, shift, maupun ditempatkan di mana pun sesuai kebutuhan perusahaan.
@@ -129,61 +293,6 @@ export default function About() {
                 <span className="text-sm font-medium">{skill}</span>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Kontak */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kontak</Badge>
-            <h2 className="text-3xl font-bold">Hubungi Saya</h2>
-            <p className="text-muted-foreground mt-2">Tertarik merekrut saya? Silakan hubungi melalui kontak di bawah ini.</p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {[
-              { icon: Phone, label: "WhatsApp", value: profile.phone, href: `https://wa.me/${profile.phone.replace(/\D/g, "")}` },
-              { icon: Mail, label: "Email", value: profile.email, href: `mailto:${profile.email}` },
-              { icon: MapPin, label: "Domisili", value: profile.location, href: null },
-              { icon: Linkedin, label: "LinkedIn", value: "asra-patrian-b75b76320", href: profile.linkedin },
-            ].map((item) => (
-              <motion.div
-                key={item.label}
-                variants={fadeUp}
-                className="bg-card border border-card-border rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition-all"
-              >
-                <div className="bg-primary/10 p-3 rounded-xl shrink-0">
-                  <item.icon size={20} className="text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground mb-0.5">{item.label}</p>
-                  {item.href ? (
-                    <a href={item.href} target="_blank" rel="noopener noreferrer"
-                      className="font-semibold text-sm hover:text-primary transition-colors truncate block">
-                      {item.value}
-                    </a>
-                  ) : (
-                    <p className="font-semibold text-sm">{item.value}</p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div className="text-center" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="rounded-full px-10 shadow-lg shadow-primary/20">
-                <MessageCircle size={18} className="mr-2" /> Chat via WhatsApp
-              </Button>
-            </a>
           </motion.div>
         </div>
       </section>

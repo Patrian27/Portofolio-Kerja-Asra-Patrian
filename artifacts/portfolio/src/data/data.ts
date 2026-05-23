@@ -34,6 +34,11 @@ export const profile = {
   email: "rasamjupatrian97@gmail.com",
   location: "Bogor, Jawa Barat",
   linkedin: "https://www.linkedin.com/in/asra-patrian-b75b76320",
+  pintarnya: "https://pintarnya.com/cv/asra-patrian-j4697e7mxt",
+  glints: "Asra Patrian",
+  jobstreet: "Asra Patrian",
+  kitalulus: "Asra Patrian",
+  siapkerja: "Asra Patrian",
   posisiDilamar: ["Office Boy (OB)", "Cleaning Service"],
   skills: [
     "Cleaning Service & Housekeeping",
