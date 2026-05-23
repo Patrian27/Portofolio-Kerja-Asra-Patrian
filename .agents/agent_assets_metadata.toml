@@ -1,0 +1,32 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "27Apvx_fIfgfy7RYCIvi3"
+uri = "file://artifacts/portfolio/public/images/hero.png"
+type = "image"
+title = "Professional office cleaning team"
+
+[[generated]]
+id = "QePigozQ5O8yU2QTlWxjl"
+uri = "file://artifacts/portfolio/public/images/office-boy.png"
+type = "image"
+title = "Office boy serving documents"
+
+[[generated]]
+id = "gtRTK_kXEob3qWJQ69vgO"
+uri = "file://artifacts/portfolio/public/images/floor-after.png"
+type = "image"
+title = "Sparkling clean office floor"
+
+[[generated]]
+id = "B50O5y08KJ2yCT2W2NzXK"
+uri = "file://artifacts/portfolio/public/images/floor-before.png"
+type = "image"
+title = "Dirty office floor before"
+
+[[generated]]
+id = "o5p8lBNrl6vIPH_0lY_Dv"
+uri = "file://artifacts/portfolio/public/images/progress.png"
+type = "image"
+title = "Cleaning progress action shot"
