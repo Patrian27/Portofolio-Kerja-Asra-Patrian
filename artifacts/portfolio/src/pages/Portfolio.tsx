@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Calendar, X, ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { workDocs, type WorkDoc, type WorkCategory } from "@/data/data";
+import { workDocs as staticDocs, type WorkCategory } from "@/data/data";
+import { useQuery } from "@tanstack/react-query";
 
 const categories: { label: string; value: WorkCategory | "all" }[] = [
   { label: "Semua", value: "all" },
@@ -24,7 +25,33 @@ const categoryLabel: Record<string, string> = {
   messenger: "Messenger",
 };
 
-function PhaseViewer({ doc }: { doc: WorkDoc }) {
+interface DocItem {
+  id: string | number;
+  title: string;
+  category: string;
+  company: string;
+  date: string;
+  description: string;
+  images: { before?: string; progress?: string; after: string };
+}
+
+function toDocItem(raw: any): DocItem {
+  return {
+    id: raw.id,
+    title: raw.title,
+    category: raw.category,
+    company: raw.company,
+    date: raw.date,
+    description: raw.description || "",
+    images: {
+      before: raw.imageBefore || undefined,
+      progress: raw.imageProgress || undefined,
+      after: raw.imageAfter,
+    },
+  };
+}
+
+function PhaseViewer({ doc }: { doc: DocItem }) {
   const phases = [
     doc.images.before ? { label: "Sebelum", src: doc.images.before } : null,
     doc.images.progress ? { label: "Proses", src: doc.images.progress } : null,
@@ -92,7 +119,7 @@ function PhaseViewer({ doc }: { doc: WorkDoc }) {
 }
 
 function DocModal({ doc, onClose, onPrev, onNext }: {
-  doc: WorkDoc;
+  doc: DocItem;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -155,10 +182,32 @@ const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<WorkCategory | "all">("all");
-  const [selected, setSelected] = useState<WorkDoc | null>(null);
+  const [selected, setSelected] = useState<DocItem | null>(null);
 
-  const filtered = activeCategory === "all" ? workDocs : workDocs.filter((d) => d.category === activeCategory);
-  const selectedIdx = selected ? filtered.indexOf(selected) : -1;
+  const { data: apiDocs } = useQuery<any[]>({
+    queryKey: ["work-docs"],
+    queryFn: async () => {
+      const res = await fetch("/api/docs");
+      if (!res.ok) throw new Error("API error");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
+  const apiItems: DocItem[] = (apiDocs ?? []).map(toDocItem);
+  const staticItems: DocItem[] = staticDocs.map((d) => ({
+    id: d.id,
+    title: d.title,
+    category: d.category,
+    company: d.company,
+    date: d.date,
+    description: d.description,
+    images: d.images,
+  }));
+
+  const allDocs: DocItem[] = [...apiItems, ...staticItems];
+  const filtered = activeCategory === "all" ? allDocs : allDocs.filter((d) => d.category === activeCategory);
+  const selectedIdx = selected ? filtered.findIndex((d) => d.id === selected.id) : -1;
 
   return (
     <div className="pt-20 min-h-screen bg-background">
@@ -174,7 +223,6 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Filter */}
       <section className="sticky top-16 z-30 bg-background/90 backdrop-blur-md border-b border-border py-4">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center gap-3 flex-wrap">
@@ -190,7 +238,7 @@ export default function Portfolio() {
               >
                 {cat.label}
                 <span className="ml-1.5 opacity-60 text-xs">
-                  ({cat.value === "all" ? workDocs.length : workDocs.filter((d) => d.category === cat.value).length})
+                  ({cat.value === "all" ? allDocs.length : allDocs.filter((d) => d.category === cat.value).length})
                 </span>
               </button>
             ))}
