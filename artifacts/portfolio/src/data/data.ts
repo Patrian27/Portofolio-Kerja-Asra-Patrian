@@ -145,6 +145,41 @@ export const experiences: Experience[] = [
       "Bekerja dalam sistem shift dengan standar kebersihan tinggi",
     ],
   },
+  {
+    id: "exp-6",
+    role: "Driver Online (GrabBike, GrabExpress, GrabFood, GrabMart, GrabSameday)",
+    company: "Grab",
+    period: "2018 – Sekarang",
+    location: "Bogor / Jabodetabek",
+    responsibilities: [
+      "Melayani pengantaran penumpang, barang, dan makanan melalui berbagai layanan Grab",
+      "Mengutamakan keamanan, ketepatan waktu, dan kepuasan pelanggan",
+      "Terbiasa mengoperasikan aplikasi dan sistem navigasi digital",
+    ],
+  },
+  {
+    id: "exp-7",
+    role: "Driver / Kurir Shopee",
+    company: "Shopee Express",
+    period: "2024 – Sekarang",
+    location: "Bogor / Jabodetabek",
+    responsibilities: [
+      "Mengantar pesanan makanan dan paket instan dengan tepat waktu dan aman",
+      "Terbiasa bekerja dengan aplikasi dan sistem logistik online",
+    ],
+  },
+  {
+    id: "exp-8",
+    role: "Marketing / Field Sales",
+    company: "PT Rekan Usaha Mikro Anda (Mapan by Gojek)",
+    period: "2015 – 2016",
+    location: "Cab. Serang Selatan",
+    responsibilities: [
+      "Bertanggung jawab melakukan sosialisasi program Arisan Mapan (Arisan Barang) di area yang ditentukan",
+      "Mencari dan membina ketua arisan dengan anggota 10–15 orang per kelompok untuk mendukung target penjualan",
+      "Memberikan edukasi kepada masyarakat terkait sistem arisan sebagai solusi kepemilikan barang secara gotong royong",
+    ],
+  },
 ];
 
 export const workDocs: WorkDoc[] = [
