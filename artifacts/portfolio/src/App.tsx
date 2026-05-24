@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
 import Pengalaman from "@/pages/Services";
 import Kontak from "@/pages/About";
+import Sertifikat from "@/pages/Sertifikat";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ function Router() {
           <Route path="/dokumentasi" component={Portfolio} />
           <Route path="/pengalaman" component={Pengalaman} />
           <Route path="/kontak" component={Kontak} />
+          <Route path="/sertifikat" component={Sertifikat} />
           <Route component={NotFound} />
         </Switch>
       </main>
