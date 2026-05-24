@@ -43,7 +43,7 @@ export const profile = {
   tiktok: "https://www.tiktok.com/@patrian27_",
   telegram: "https://t.me/08997706751",
   facebook: "https://www.facebook.com/profile.php?id=61554212107923",
-  posisiDilamar: ["Office Boy (OB)", "Cleaning Service"],
+  posisiDilamar: ["Office Boy (OB)", "Cleaning Service", "Messenger"],
   skills: [
     "Cleaning Service & Housekeeping",
     "Office Boy & Operasional Kantor",
