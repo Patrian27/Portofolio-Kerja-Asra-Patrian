@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Calendar, X, ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { workDocs as staticDocs, type WorkCategory } from "@/data/data";
+import { type WorkCategory } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
 
 const categories: { label: string; value: WorkCategory | "all" }[] = [
@@ -194,18 +194,7 @@ export default function Portfolio() {
     staleTime: 30000,
   });
 
-  const apiItems: DocItem[] = (apiDocs ?? []).map(toDocItem);
-  const staticItems: DocItem[] = staticDocs.map((d) => ({
-    id: d.id,
-    title: d.title,
-    category: d.category,
-    company: d.company,
-    date: d.date,
-    description: d.description,
-    images: d.images,
-  }));
-
-  const allDocs: DocItem[] = [...apiItems, ...staticItems];
+  const allDocs: DocItem[] = (apiDocs ?? []).map(toDocItem);
   const filtered = activeCategory === "all" ? allDocs : allDocs.filter((d) => d.category === activeCategory);
   const selectedIdx = selected ? filtered.findIndex((d) => d.id === selected.id) : -1;
 

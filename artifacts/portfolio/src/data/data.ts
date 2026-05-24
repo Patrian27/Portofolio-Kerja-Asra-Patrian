@@ -182,7 +182,9 @@ export const experiences: Experience[] = [
   },
 ];
 
-export const workDocs: WorkDoc[] = [
+export const workDocs: WorkDoc[] = [];
+
+const _unused = [
   {
     id: "doc-1",
     title: "Washing Manual & Cleaning Floordrain Area Toilet",
