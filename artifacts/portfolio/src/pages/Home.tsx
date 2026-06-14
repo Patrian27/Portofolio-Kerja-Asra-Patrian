@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,8 @@ const stagger = {
 };
 
 export default function Home() {
+  const [logoModal, setLogoModal] = useState<{ src: string; company: string } | null>(null);
+
   const { data: apiProfile } = useQuery<any>({
     queryKey: ["profile"],
     queryFn: async () => {
@@ -54,6 +57,22 @@ export default function Home() {
 
   return (
     <div className="overflow-hidden">
+      <AnimatePresence>
+        {logoModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setLogoModal(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.85 }} transition={{ duration: 0.2 }}
+              className="bg-white rounded-2xl p-8 shadow-2xl max-w-xs w-full mx-4 flex flex-col items-center gap-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img src={logoModal.src} alt={logoModal.company} className="w-48 h-48 object-contain" />
+              <p className="text-sm font-semibold text-slate-700 text-center">{logoModal.company}</p>
+              <button onClick={() => setLogoModal(null)} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Tutup</button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Hero */}
       <section className="relative min-h-[100dvh] flex items-center bg-gradient-to-br from-secondary via-secondary to-[hsl(173,60%,12%)] text-white pt-20">
         <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_30%_50%,hsl(173,100%,33%),transparent_60%)]" />
@@ -264,7 +283,11 @@ export default function Home() {
                 variants={fadeUp}
                 className="bg-card border border-card-border rounded-2xl p-6 flex gap-5 items-start hover:shadow-md transition-all"
               >
-                <div className="w-12 h-12 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0">
+                <div
+                  className={`w-12 h-12 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${exp.companyLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
+                  onClick={() => exp.companyLogo && setLogoModal({ src: exp.companyLogo, company: exp.company })}
+                  title={exp.companyLogo ? "Klik untuk perbesar" : undefined}
+                >
                   {exp.companyLogo
                     ? <img src={exp.companyLogo} alt={exp.company} className="w-full h-full object-contain p-1" />
                     : <Briefcase size={20} className="text-primary" />}

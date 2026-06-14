@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Briefcase, Star, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile, education } from "@/data/data";
@@ -66,7 +67,31 @@ function SkillBar({ name, level }: { name: string; level: number }) {
   );
 }
 
+function LogoModal({ src, company, onClose }: { src: string; company: string; onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.85 }}
+        transition={{ duration: 0.2 }}
+        className="bg-white rounded-2xl p-8 shadow-2xl max-w-xs w-full mx-4 flex flex-col items-center gap-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img src={src} alt={company} className="w-48 h-48 object-contain" />
+        <p className="text-sm font-semibold text-slate-700 text-center">{company}</p>
+        <button onClick={onClose} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Tutup</button>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Pengalaman() {
+  const [logoModal, setLogoModal] = useState<{ src: string; company: string } | null>(null);
+
   const { data: apiExps } = useQuery<any[]>({
     queryKey: ["experiences"],
     queryFn: async () => {
@@ -93,6 +118,9 @@ export default function Pengalaman() {
 
   return (
     <div className="pt-20 min-h-screen bg-background">
+      <AnimatePresence>
+        {logoModal && <LogoModal src={logoModal.src} company={logoModal.company} onClose={() => setLogoModal(null)} />}
+      </AnimatePresence>
       <section className="bg-gradient-to-br from-secondary to-[hsl(173,60%,12%)] text-white py-20 px-4">
         <div className="container mx-auto max-w-3xl text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -120,7 +148,11 @@ export default function Pengalaman() {
                 className="bg-card border border-card-border rounded-2xl p-7 hover:shadow-lg transition-all"
               >
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0">
+                  <div
+                    className={`w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${exp.companyLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
+                    onClick={() => exp.companyLogo && setLogoModal({ src: exp.companyLogo, company: exp.company })}
+                    title={exp.companyLogo ? "Klik untuk perbesar" : undefined}
+                  >
                     {exp.companyLogo
                       ? <img src={exp.companyLogo} alt={exp.company} className="w-full h-full object-contain p-1.5" />
                       : <Briefcase size={22} className="text-primary" />}
