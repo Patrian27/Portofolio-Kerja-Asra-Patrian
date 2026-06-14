@@ -224,6 +224,7 @@ const EMPLOYMENT_TYPES = [
   { value: "Paruh Waktu", label: "Paruh Waktu" },
   { value: "Kontrak", label: "Kontrak" },
   { value: "Outsourcing", label: "Outsourcing" },
+  { value: "Wiraswasta", label: "Wiraswasta (Self-employed)" },
   { value: "Pekerja Lepas", label: "Pekerja Lepas (Freelance)" },
   { value: "Magang", label: "Magang (Internship)" },
   { value: "Sukarela", label: "Sukarela (Volunteer)" },
