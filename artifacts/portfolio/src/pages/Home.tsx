@@ -273,7 +273,9 @@ export default function Home() {
                       <h3 className="font-bold text-base">{exp.role}</h3>
                       <p className="text-muted-foreground text-sm">
                         {exp.company}
-                        {exp.via && <span className="text-xs ml-1 text-muted-foreground/70">via {exp.via}</span>}
+                        {Array.isArray(exp.via) && exp.via.length > 0 && (
+                          <span className="text-xs ml-1 text-muted-foreground/70">via {exp.via.join(" · ")}</span>
+                        )}
                       </p>
                       <p className="text-xs text-muted-foreground">{exp.location}</p>
                     </div>

@@ -6,12 +6,24 @@ const router = Router();
 
 const AUTH_PASSWORD = process.env.ADMIN_PASSWORD ?? "asra2024";
 
+function parseVia(via: string | null): string[] {
+  if (!via) return [];
+  try {
+    const parsed = JSON.parse(via);
+    if (Array.isArray(parsed)) return parsed;
+    return [parsed];
+  } catch {
+    return [via];
+  }
+}
+
 router.get("/experiences", async (req, res) => {
   try {
     const rows = await db.select().from(workExperiencesTable).orderBy(asc(workExperiencesTable.sortOrder), asc(workExperiencesTable.id));
     const data = rows.map((r) => ({
       ...r,
       responsibilities: JSON.parse(r.responsibilities || "[]"),
+      via: parseVia(r.via),
     }));
     res.json(data);
   } catch (err) {
@@ -26,10 +38,11 @@ router.post("/experiences", async (req, res) => {
     if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
     if (!role || !company || !period) return res.status(400).json({ error: "Data tidak lengkap" });
 
+    const viaArr = Array.isArray(via) ? via : (via ? [via] : []);
     const [row] = await db.insert(workExperiencesTable).values({
       role,
       company,
-      via: via || null,
+      via: viaArr.length > 0 ? JSON.stringify(viaArr) : null,
       employmentType: employmentType || null,
       period,
       location: location || "",
@@ -37,7 +50,7 @@ router.post("/experiences", async (req, res) => {
       sortOrder: sortOrder ?? 0,
     }).returning();
 
-    res.status(201).json({ ...row, responsibilities: JSON.parse(row.responsibilities) });
+    res.status(201).json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via) });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });
@@ -54,10 +67,11 @@ router.put("/experiences/:id", async (req, res) => {
     const existing = await db.select().from(workExperiencesTable).where(eq(workExperiencesTable.id, id));
     if (existing.length === 0) return res.status(404).json({ error: "Data tidak ditemukan" });
 
+    const viaArr = Array.isArray(via) ? via : (via ? [via] : []);
     const [row] = await db.update(workExperiencesTable).set({
       role,
       company,
-      via: via || null,
+      via: viaArr.length > 0 ? JSON.stringify(viaArr) : null,
       employmentType: employmentType || null,
       period,
       location: location || "",
@@ -65,7 +79,7 @@ router.put("/experiences/:id", async (req, res) => {
       sortOrder: existing[0].sortOrder,
     }).where(eq(workExperiencesTable.id, id)).returning();
 
-    res.json({ ...row, responsibilities: JSON.parse(row.responsibilities) });
+    res.json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via) });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });

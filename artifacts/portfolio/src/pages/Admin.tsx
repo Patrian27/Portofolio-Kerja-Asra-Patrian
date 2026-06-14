@@ -231,7 +231,7 @@ const EMPLOYMENT_TYPES = [
   { value: "Tidak Tetap", label: "Tidak Tetap (Temporary)" },
 ];
 
-const emptyExp = { role: "", company: "", via: "", employmentType: "", period: "", location: "", responsibilities: [] as string[] };
+const emptyExp = { role: "", company: "", via: [] as string[], employmentType: "", period: "", location: "", responsibilities: [] as string[] };
 
 function PengalamanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
@@ -259,7 +259,7 @@ function PengalamanTab({ pw }: { pw: string }) {
   function openAdd() { setEditId(null); setForm(emptyExp); setShowForm(true); }
   function openEdit(exp: any) {
     setEditId(exp.id);
-    setForm({ role: exp.role, company: exp.company, via: exp.via ?? "", employmentType: exp.employmentType ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
+    setForm({ role: exp.role, company: exp.company, via: Array.isArray(exp.via) ? exp.via : (exp.via ? [exp.via] : []), employmentType: exp.employmentType ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
     setShowForm(true);
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
@@ -329,7 +329,9 @@ function PengalamanTab({ pw }: { pw: string }) {
                   ))}
                 </select>
               </div>
-              <Field label="Via (opsional)" value={form.via} onChange={(v) => setForm({ ...form, via: v })} placeholder="cth: PT Mitra Kerja" />
+              <div className="md:col-span-2">
+                <TagsField label="Via / Vendor (tekan Enter untuk tambah, bisa lebih dari 1)" values={form.via} onChange={(v) => setForm({ ...form, via: v })} placeholder="cth: PT Mitra Kerja" />
+              </div>
               <Field label="Periode *" value={form.period} onChange={(v) => setForm({ ...form, period: v })} placeholder="cth: 2022 – 2024" />
               <Field label="Kota / Lokasi" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="cth: Jakarta" />
             </div>
@@ -367,7 +369,10 @@ function PengalamanTab({ pw }: { pw: string }) {
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-slate-800">{exp.role}</p>
                 <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
-                  <p className="text-sm text-slate-500">{exp.company}{exp.via ? ` · ${exp.via}` : ""}</p>
+                  <p className="text-sm text-slate-500">
+                    {exp.company}
+                    {Array.isArray(exp.via) && exp.via.length > 0 ? ` · via ${exp.via.join(", ")}` : ""}
+                  </p>
                   {exp.employmentType && (
                     <span className="text-[11px] bg-teal-50 text-teal-700 border border-teal-200 rounded-full px-2 py-0.5 font-medium">{exp.employmentType}</span>
                   )}
