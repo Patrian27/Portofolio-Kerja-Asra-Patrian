@@ -46,6 +46,7 @@ export const workExperiencesTable = pgTable("work_experiences", {
   role: text("role").notNull(),
   company: text("company").notNull(),
   via: text("via"),
+  employmentType: text("employment_type"),
   period: text("period").notNull(),
   location: text("location").notNull(),
   responsibilities: text("responsibilities").notNull().default("[]"),

@@ -127,8 +127,13 @@ export default function Pengalaman() {
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
                         <h3 className="text-xl font-bold">{exp.role}</h3>
-                        <p className="text-muted-foreground font-medium">{exp.company}</p>
-                        {exp.via && <p className="text-xs text-muted-foreground/70">via {exp.via}</p>}
+                        <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                          <p className="text-muted-foreground font-medium">{exp.company}</p>
+                          {exp.employmentType && (
+                            <Badge variant="secondary" className="rounded-full text-[11px] px-2 py-0.5 font-medium">{exp.employmentType}</Badge>
+                          )}
+                        </div>
+                        {exp.via && <p className="text-xs text-muted-foreground/70 mt-0.5">via {exp.via}</p>}
                         <p className="text-xs text-muted-foreground mt-0.5">{exp.location}</p>
                       </div>
                       <Badge variant="outline" className="rounded-full shrink-0 text-xs">{exp.period}</Badge>

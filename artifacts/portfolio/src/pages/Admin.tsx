@@ -218,7 +218,19 @@ function ProfilTab({ pw }: { pw: string }) {
 
 // ─── PENGALAMAN TAB ──────────────────────────────────────────────────────────
 
-const emptyExp = { role: "", company: "", via: "", period: "", location: "", responsibilities: [] as string[] };
+const EMPLOYMENT_TYPES = [
+  { value: "", label: "— Pilih tipe pekerjaan —" },
+  { value: "Penuh Waktu", label: "Penuh Waktu" },
+  { value: "Paruh Waktu", label: "Paruh Waktu" },
+  { value: "Kontrak", label: "Kontrak" },
+  { value: "Outsourcing", label: "Outsourcing" },
+  { value: "Pekerja Lepas", label: "Pekerja Lepas (Freelance)" },
+  { value: "Magang", label: "Magang (Internship)" },
+  { value: "Sukarela", label: "Sukarela (Volunteer)" },
+  { value: "Tidak Tetap", label: "Tidak Tetap (Temporary)" },
+];
+
+const emptyExp = { role: "", company: "", via: "", employmentType: "", period: "", location: "", responsibilities: [] as string[] };
 
 function PengalamanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
@@ -246,7 +258,7 @@ function PengalamanTab({ pw }: { pw: string }) {
   function openAdd() { setEditId(null); setForm(emptyExp); setShowForm(true); }
   function openEdit(exp: any) {
     setEditId(exp.id);
-    setForm({ role: exp.role, company: exp.company, via: exp.via ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
+    setForm({ role: exp.role, company: exp.company, via: exp.via ?? "", employmentType: exp.employmentType ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
     setShowForm(true);
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
@@ -304,7 +316,19 @@ function PengalamanTab({ pw }: { pw: string }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Posisi / Jabatan *" value={form.role} onChange={(v) => setForm({ ...form, role: v })} placeholder="cth: Office Boy" />
               <Field label="Perusahaan *" value={form.company} onChange={(v) => setForm({ ...form, company: v })} placeholder="cth: PT ABC Indonesia" />
-              <Field label="Via (Outsourcing)" value={form.via} onChange={(v) => setForm({ ...form, via: v })} placeholder="cth: PT Mitra Kerja (opsional)" />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-slate-700">Tipe Pekerjaan</label>
+                <select
+                  value={form.employmentType}
+                  onChange={(e) => setForm({ ...form, employmentType: e.target.value })}
+                  className="border border-slate-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal-300 text-slate-700"
+                >
+                  {EMPLOYMENT_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+              </div>
+              <Field label="Via (opsional)" value={form.via} onChange={(v) => setForm({ ...form, via: v })} placeholder="cth: PT Mitra Kerja" />
               <Field label="Periode *" value={form.period} onChange={(v) => setForm({ ...form, period: v })} placeholder="cth: 2022 – 2024" />
               <Field label="Kota / Lokasi" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="cth: Jakarta" />
             </div>
@@ -341,7 +365,12 @@ function PengalamanTab({ pw }: { pw: string }) {
               {/* Konten */}
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-slate-800">{exp.role}</p>
-                <p className="text-sm text-slate-500">{exp.company}{exp.via ? ` · ${exp.via}` : ""}</p>
+                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                  <p className="text-sm text-slate-500">{exp.company}{exp.via ? ` · ${exp.via}` : ""}</p>
+                  {exp.employmentType && (
+                    <span className="text-[11px] bg-teal-50 text-teal-700 border border-teal-200 rounded-full px-2 py-0.5 font-medium">{exp.employmentType}</span>
+                  )}
+                </div>
                 <p className="text-xs text-teal-600 font-medium mt-0.5">{exp.period} · {exp.location}</p>
                 {exp.responsibilities?.length > 0 && (
                   <ul className="mt-2 space-y-0.5">

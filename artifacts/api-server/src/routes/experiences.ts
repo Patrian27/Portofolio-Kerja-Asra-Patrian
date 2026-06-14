@@ -22,7 +22,7 @@ router.get("/experiences", async (req, res) => {
 
 router.post("/experiences", async (req, res) => {
   try {
-    const { adminPassword, role, company, via, period, location, responsibilities, sortOrder } = req.body;
+    const { adminPassword, role, company, via, employmentType, period, location, responsibilities, sortOrder } = req.body;
     if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
     if (!role || !company || !period) return res.status(400).json({ error: "Data tidak lengkap" });
 
@@ -30,6 +30,7 @@ router.post("/experiences", async (req, res) => {
       role,
       company,
       via: via || null,
+      employmentType: employmentType || null,
       period,
       location: location || "",
       responsibilities: JSON.stringify(Array.isArray(responsibilities) ? responsibilities : []),
@@ -45,7 +46,7 @@ router.post("/experiences", async (req, res) => {
 
 router.put("/experiences/:id", async (req, res) => {
   try {
-    const { adminPassword, role, company, via, period, location, responsibilities } = req.body;
+    const { adminPassword, role, company, via, employmentType, period, location, responsibilities } = req.body;
     if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
     if (!role || !company || !period) return res.status(400).json({ error: "Data tidak lengkap" });
 
@@ -57,6 +58,7 @@ router.put("/experiences/:id", async (req, res) => {
       role,
       company,
       via: via || null,
+      employmentType: employmentType || null,
       period,
       location: location || "",
       responsibilities: JSON.stringify(Array.isArray(responsibilities) ? responsibilities : []),
