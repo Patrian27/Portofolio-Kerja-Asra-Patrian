@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, Briefcase, Star, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { experiences, profile, education } from "@/data/data";
+import { profile, education } from "@/data/data";
+import { useQuery } from "@tanstack/react-query";
 
 const skillGroups = [
   {
@@ -66,9 +67,32 @@ function SkillBar({ name, level }: { name: string; level: number }) {
 }
 
 export default function Pengalaman() {
+  const { data: apiExps } = useQuery<any[]>({
+    queryKey: ["experiences"],
+    queryFn: async () => {
+      const res = await fetch("/api/experiences");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
+  const { data: apiProfile } = useQuery<any>({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
+  const experiences = apiExps ?? [];
+  const softSkills: string[] = apiProfile?.softSkills ?? profile.softSkills;
+  const additionalInfo: string[] = apiProfile?.additionalInfo ?? profile.additionalInfo;
+
   return (
     <div className="pt-20 min-h-screen bg-background">
-      {/* Hero */}
       <section className="bg-gradient-to-br from-secondary to-[hsl(173,60%,12%)] text-white py-20 px-4">
         <div className="container mx-auto max-w-3xl text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -81,7 +105,6 @@ export default function Pengalaman() {
         </div>
       </section>
 
-      {/* Pengalaman Kerja */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-10">
@@ -89,19 +112,12 @@ export default function Pengalaman() {
             <h2 className="text-3xl font-bold">Pengalaman Kerja</h2>
           </motion.div>
 
-          <motion.div
-            className="space-y-6"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {experiences.map((exp, idx) => (
+          <motion.div className="space-y-6" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            {experiences.map((exp: any, idx: number) => (
               <motion.div
                 key={exp.id}
                 variants={fadeUp}
                 className="bg-card border border-card-border rounded-2xl p-7 hover:shadow-lg transition-all"
-                data-testid={`card-exp-${idx}`}
               >
                 <div className="flex items-start gap-4 mb-5">
                   <div className="bg-primary/10 p-3 rounded-xl shrink-0">
@@ -112,9 +128,7 @@ export default function Pengalaman() {
                       <div>
                         <h3 className="text-xl font-bold">{exp.role}</h3>
                         <p className="text-muted-foreground font-medium">{exp.company}</p>
-                        {exp.via && (
-                          <p className="text-xs text-muted-foreground/70">via {exp.via}</p>
-                        )}
+                        {exp.via && <p className="text-xs text-muted-foreground/70">via {exp.via}</p>}
                         <p className="text-xs text-muted-foreground mt-0.5">{exp.location}</p>
                       </div>
                       <Badge variant="outline" className="rounded-full shrink-0 text-xs">{exp.period}</Badge>
@@ -122,7 +136,7 @@ export default function Pengalaman() {
                   </div>
                 </div>
                 <ul className="space-y-2.5 ml-1">
-                  {exp.responsibilities.map((r) => (
+                  {(exp.responsibilities ?? []).map((r: string) => (
                     <li key={r} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                       <CheckCircle2 size={15} className="text-primary shrink-0 mt-0.5" />
                       {r}
@@ -135,26 +149,15 @@ export default function Pengalaman() {
         </div>
       </section>
 
-      {/* Pendidikan */}
       <section className="py-12 bg-muted/20">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-8">
             <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Pendidikan</Badge>
             <h2 className="text-3xl font-bold">Riwayat Pendidikan</h2>
           </motion.div>
-          <motion.div
-            className="space-y-4"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <motion.div className="space-y-4" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             {education.map((edu) => (
-              <motion.div
-                key={edu.institution}
-                variants={fadeUp}
-                className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center"
-              >
+              <motion.div key={edu.institution} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center">
                 <div className="bg-primary/10 p-3 rounded-xl shrink-0">
                   <GraduationCap size={22} className="text-primary" />
                 </div>
@@ -169,28 +172,18 @@ export default function Pengalaman() {
         </div>
       </section>
 
-      {/* Skills */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Kompetensi</Badge>
             <h2 className="text-3xl font-bold">Tingkat Keahlian</h2>
           </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             {skillGroups.map((group) => (
               <motion.div key={group.title} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-7">
                 <Badge className={`mb-5 ${group.color}`}>{group.title}</Badge>
                 <div className="space-y-4">
-                  {group.skills.map((s) => (
-                    <SkillBar key={s.name} name={s.name} level={s.level} />
-                  ))}
+                  {group.skills.map((s) => <SkillBar key={s.name} name={s.name} level={s.level} />)}
                 </div>
               </motion.div>
             ))}
@@ -198,14 +191,13 @@ export default function Pengalaman() {
         </div>
       </section>
 
-      {/* Soft Skills & Etos Kerja */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-2xl text-center">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Etos Kerja</Badge>
             <h2 className="text-3xl font-bold mb-8">Sikap & Etos Kerja</h2>
             <div className="flex flex-wrap justify-center gap-3">
-              {profile.softSkills.map((s) => (
+              {softSkills.map((s: string) => (
                 <div key={s} className="flex items-center gap-2 bg-card border border-card-border rounded-full px-4 py-2 text-sm font-medium">
                   <Star size={14} className="text-primary fill-primary" />
                   {s}
@@ -216,26 +208,15 @@ export default function Pengalaman() {
         </div>
       </section>
 
-      {/* Info Tambahan */}
       <section className="py-16 bg-secondary text-white">
         <div className="container mx-auto px-4 md:px-6 max-w-2xl">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-8">
             <Badge className="mb-3 bg-primary/20 text-primary border-primary/30">Info Tambahan</Badge>
             <h2 className="text-2xl font-bold text-white">Informasi Tambahan</h2>
           </motion.div>
-          <motion.ul
-            className="space-y-3"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {profile.additionalInfo.map((info) => (
-              <motion.li
-                key={info}
-                variants={fadeUp}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-4"
-              >
+          <motion.ul className="space-y-3" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            {additionalInfo.map((info: string) => (
+              <motion.li key={info} variants={fadeUp} className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-4">
                 <CheckCircle2 size={18} className="text-primary shrink-0" />
                 <span className="text-slate-200 text-sm">{info}</span>
               </motion.li>
