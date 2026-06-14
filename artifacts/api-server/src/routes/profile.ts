@@ -52,6 +52,7 @@ router.put("/profile", async (req, res) => {
       skills: JSON.stringify(Array.isArray(fields.skills) ? fields.skills : []),
       softSkills: JSON.stringify(Array.isArray(fields.softSkills) ? fields.softSkills : []),
       additionalInfo: JSON.stringify(Array.isArray(fields.additionalInfo) ? fields.additionalInfo : []),
+      profilePhoto: fields.profilePhoto !== undefined ? fields.profilePhoto : null,
     };
 
     const existing = await db.select().from(profileSettingsTable).where(eq(profileSettingsTable.id, 1));

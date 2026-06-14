@@ -38,6 +38,7 @@ export const profileSettingsTable = pgTable("profile_settings", {
   skills: text("skills").notNull().default("[]"),
   softSkills: text("soft_skills").notNull().default("[]"),
   additionalInfo: text("additional_info").notNull().default("[]"),
+  profilePhoto: text("profile_photo"),
 });
 
 export const workExperiencesTable = pgTable("work_experiences", {

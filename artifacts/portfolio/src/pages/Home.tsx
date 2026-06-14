@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { profile, experiences, workDocs } from "@/data/data";
+import { profile as staticProfile, workDocs } from "@/data/data";
+import { useQuery } from "@tanstack/react-query";
 
 const categoryLabel: Record<string, string> = {
   cleaning: "Cleaning Service",
@@ -27,6 +28,30 @@ const stagger = {
 };
 
 export default function Home() {
+  const { data: apiProfile } = useQuery<any>({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
+  const { data: apiExps } = useQuery<any[]>({
+    queryKey: ["experiences"],
+    queryFn: async () => {
+      const res = await fetch("/api/experiences");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
+  const profile = apiProfile ?? staticProfile;
+  const profilePhoto = apiProfile?.profilePhoto || "/images/profile-nobg.png";
+  const experiences = apiExps ?? [];
+
   return (
     <div className="overflow-hidden">
       {/* Hero */}
@@ -47,9 +72,10 @@ export default function Home() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-primary/80 to-[hsl(173,80%,25%)] shadow-2xl shadow-primary/40" />
               <div className="absolute inset-1 rounded-full overflow-hidden bg-gradient-to-b from-[hsl(173,60%,18%)] to-[hsl(173,60%,10%)]">
                 <img
-                  src="/images/profile-nobg.png"
-                  alt="Asra Patrian"
+                  src={profilePhoto}
+                  alt={profile.name ?? "Asra Patrian"}
                   className="w-full h-full object-cover object-top scale-110"
+                  onError={(e) => { (e.target as HTMLImageElement).src = "/images/profile-nobg.png"; }}
                 />
               </div>
               <div className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">

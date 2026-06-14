@@ -150,6 +150,36 @@ function ProfilTab({ pw }: { pw: string }) {
 
   return (
     <form onSubmit={save} className="space-y-5">
+      {/* Foto Profil */}
+      <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50/50">
+        <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Camera size={15} className="text-teal-600" /> Foto Profil</p>
+        <div className="flex flex-col sm:flex-row items-start gap-5">
+          {/* Preview */}
+          <div className="shrink-0">
+            <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-teal-400 shadow-lg bg-slate-200">
+              <img
+                src={f.profilePhoto || "/images/profile-nobg.png"}
+                alt="Foto Profil"
+                className="w-full h-full object-cover object-top"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/images/profile-nobg.png"; }}
+              />
+            </div>
+          </div>
+          {/* Upload area */}
+          <div className="flex-1 space-y-2">
+            <p className="text-xs text-slate-500">Upload foto baru untuk mengganti foto profil yang tampil di halaman utama.</p>
+            <SingleImagePicker
+              label="Pilih Foto Profil"
+              value={f.profilePhoto ?? ""}
+              onChange={(v) => set("profilePhoto", v)}
+            />
+            {f.profilePhoto && (
+              <button type="button" onClick={() => set("profilePhoto", null)} className="text-xs text-red-500 hover:underline flex items-center gap-1"><X size={11} /> Hapus foto (gunakan default)</button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Nama Lengkap" value={f.name ?? ""} onChange={(v) => set("name", v)} placeholder="Asra Patrian" />
         <Field label="Tagline" value={f.tagline ?? ""} onChange={(v) => set("tagline", v)} placeholder="Tenaga Cleaning Service..." />
