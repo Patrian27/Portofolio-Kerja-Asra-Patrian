@@ -231,7 +231,7 @@ const EMPLOYMENT_TYPES = [
   { value: "Tidak Tetap", label: "Tidak Tetap (Temporary)" },
 ];
 
-const emptyExp = { role: "", company: "", via: [] as string[], employmentType: "", period: "", location: "", responsibilities: [] as string[] };
+const emptyExp = { role: "", company: "", via: [] as string[], employmentType: "", companyLogo: "", period: "", location: "", responsibilities: [] as string[] };
 
 function PengalamanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
@@ -259,7 +259,7 @@ function PengalamanTab({ pw }: { pw: string }) {
   function openAdd() { setEditId(null); setForm(emptyExp); setShowForm(true); }
   function openEdit(exp: any) {
     setEditId(exp.id);
-    setForm({ role: exp.role, company: exp.company, via: Array.isArray(exp.via) ? exp.via : (exp.via ? [exp.via] : []), employmentType: exp.employmentType ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
+    setForm({ role: exp.role, company: exp.company, via: Array.isArray(exp.via) ? exp.via : (exp.via ? [exp.via] : []), employmentType: exp.employmentType ?? "", companyLogo: exp.companyLogo ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
     setShowForm(true);
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
@@ -314,6 +314,35 @@ function PengalamanTab({ pw }: { pw: string }) {
               <h3 className="font-bold text-slate-700">{editId !== null ? "✏️ Edit Pengalaman" : "Pengalaman Baru"}</h3>
               <button type="button" onClick={closeForm}><X size={18} className="text-slate-400" /></button>
             </div>
+
+            {/* Logo upload */}
+            <div className="flex items-center gap-4">
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center">
+                  {form.companyLogo
+                    ? <img src={form.companyLogo} alt="logo" className="w-full h-full object-contain p-1" />
+                    : <Image size={22} className="text-slate-300" />}
+                </div>
+                <label className="absolute -bottom-1.5 -right-1.5 bg-teal-600 text-white rounded-full p-1 cursor-pointer hover:bg-teal-700 transition-colors">
+                  <Camera size={11} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0]; if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setForm({ ...form, companyLogo: reader.result as string });
+                    reader.readAsDataURL(file);
+                    e.target.value = "";
+                  }} />
+                </label>
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-medium text-slate-700">Logo Perusahaan</p>
+                <p className="text-xs text-slate-400">Upload logo PNG/JPG (opsional). Tampil di halaman pengalaman.</p>
+                {form.companyLogo && (
+                  <button type="button" onClick={() => setForm({ ...form, companyLogo: "" })} className="text-xs text-red-400 hover:text-red-600 flex items-center gap-1"><X size={11} /> Hapus logo</button>
+                )}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Posisi / Jabatan *" value={form.role} onChange={(v) => setForm({ ...form, role: v })} placeholder="cth: Office Boy" />
               <Field label="Perusahaan *" value={form.company} onChange={(v) => setForm({ ...form, company: v })} placeholder="cth: PT ABC Indonesia" />
@@ -363,6 +392,13 @@ function PengalamanTab({ pw }: { pw: string }) {
                   className="p-1 rounded-lg hover:bg-teal-50 text-slate-300 hover:text-teal-500 disabled:opacity-20 transition-colors"
                   title="Pindah ke bawah"
                 ><ChevronDown size={15} /></button>
+              </div>
+
+              {/* Logo perusahaan */}
+              <div className="w-10 h-10 rounded-lg border border-slate-100 bg-slate-50 overflow-hidden flex items-center justify-center shrink-0">
+                {exp.companyLogo
+                  ? <img src={exp.companyLogo} alt={exp.company} className="w-full h-full object-contain p-1" />
+                  : <Briefcase size={16} className="text-slate-300" />}
               </div>
 
               {/* Konten */}

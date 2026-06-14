@@ -120,8 +120,10 @@ export default function Pengalaman() {
                 className="bg-card border border-card-border rounded-2xl p-7 hover:shadow-lg transition-all"
               >
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="bg-primary/10 p-3 rounded-xl shrink-0">
-                    <Briefcase size={22} className="text-primary" />
+                  <div className="w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0">
+                    {exp.companyLogo
+                      ? <img src={exp.companyLogo} alt={exp.company} className="w-full h-full object-contain p-1.5" />
+                      : <Briefcase size={22} className="text-primary" />}
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-start justify-between gap-2">
