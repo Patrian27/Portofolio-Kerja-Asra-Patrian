@@ -55,6 +55,16 @@ export const workExperiencesTable = pgTable("work_experiences", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const educationTable = pgTable("education", {
+  id: serial("id").primaryKey(),
+  institution: text("institution").notNull(),
+  major: text("major").notNull(),
+  year: text("year").notNull(),
+  schoolLogo: text("school_logo"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const certificatesTable = pgTable("certificates", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),

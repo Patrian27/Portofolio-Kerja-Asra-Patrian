@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Briefcase, Star, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { profile, education } from "@/data/data";
+import { profile } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
 
 const skillGroups = [
@@ -112,7 +112,18 @@ export default function Pengalaman() {
     staleTime: 30000,
   });
 
+  const { data: apiEducation } = useQuery<any[]>({
+    queryKey: ["education"],
+    queryFn: async () => {
+      const res = await fetch("/api/education");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
   const experiences = apiExps ?? [];
+  const educationList = apiEducation ?? [];
   const softSkills: string[] = apiProfile?.softSkills ?? profile.softSkills;
   const additionalInfo: string[] = apiProfile?.additionalInfo ?? profile.additionalInfo;
 
@@ -201,10 +212,16 @@ export default function Pengalaman() {
             <h2 className="text-3xl font-bold">Riwayat Pendidikan</h2>
           </motion.div>
           <motion.div className="space-y-4" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            {education.map((edu) => (
-              <motion.div key={edu.institution} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center">
-                <div className="bg-primary/10 p-3 rounded-xl shrink-0">
-                  <GraduationCap size={22} className="text-primary" />
+            {educationList.map((edu: any) => (
+              <motion.div key={edu.id} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center">
+                <div
+                  className={`w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${edu.schoolLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
+                  onClick={() => edu.schoolLogo && setLogoModal({ src: edu.schoolLogo, company: edu.institution })}
+                  title={edu.schoolLogo ? "Klik untuk perbesar" : undefined}
+                >
+                  {edu.schoolLogo
+                    ? <img src={edu.schoolLogo} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
+                    : <GraduationCap size={22} className="text-primary" />}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold">{edu.institution}</h3>

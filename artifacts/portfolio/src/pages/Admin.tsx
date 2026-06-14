@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock, Plus, X, Trash2, CheckCircle, Upload, Image,
   User, Briefcase, Award, Camera, ChevronDown, Edit3, Save, Pencil,
-  ChevronUp, GripVertical
+  ChevronUp, GripVertical, GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -119,6 +119,7 @@ function TagsField({ label, values, onChange }: { label: string; values: string[
 const TABS = [
   { id: "profil", label: "Profil", icon: User },
   { id: "pengalaman", label: "Pengalaman", icon: Briefcase },
+  { id: "pendidikan", label: "Pendidikan", icon: GraduationCap },
   { id: "sertifikat", label: "Sertifikat", icon: Award },
   { id: "dokumentasi", label: "Dokumentasi", icon: Camera },
 ] as const;
@@ -674,6 +675,171 @@ function DokumentasiTab({ pw }: { pw: string }) {
   );
 }
 
+// ─── PENDIDIKAN TAB ──────────────────────────────────────────────────────────
+
+const emptyEdu = { institution: "", major: "", year: "", schoolLogo: "" };
+
+function PendidikanTab({ pw }: { pw: string }) {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [form, setForm] = useState(emptyEdu);
+  const [saving, setSaving] = useState(false);
+  const [localOrder, setLocalOrder] = useState<any[] | null>(null);
+  const [reordering, setReordering] = useState(false);
+
+  const { data: eduList = [], isLoading } = useQuery<any[]>({
+    queryKey: ["admin-edu"],
+    queryFn: () => apiFetch("/education"),
+  });
+
+  const orderedList = localOrder ?? eduList;
+
+  const del = useMutation({
+    mutationFn: (id: number) => apiFetch(`/education/${id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminPassword: pw }) }),
+    onSuccess: () => { setLocalOrder(null); qc.invalidateQueries({ queryKey: ["admin-edu"] }); qc.invalidateQueries({ queryKey: ["education"] }); toast({ title: "Berhasil dihapus!" }); },
+    onError: (e: any) => toast({ title: e.message, variant: "destructive" }),
+  });
+
+  function openAdd() { setEditId(null); setForm(emptyEdu); setShowForm(true); }
+  function openEdit(edu: any) {
+    setEditId(edu.id);
+    setForm({ institution: edu.institution, major: edu.major, year: edu.year, schoolLogo: edu.schoolLogo ?? "" });
+    setShowForm(true);
+  }
+  function closeForm() { setShowForm(false); setEditId(null); setForm(emptyEdu); }
+
+  async function move(index: number, dir: "up" | "down") {
+    const list = [...orderedList];
+    const swapIdx = dir === "up" ? index - 1 : index + 1;
+    if (swapIdx < 0 || swapIdx >= list.length) return;
+    [list[index], list[swapIdx]] = [list[swapIdx], list[index]];
+    setLocalOrder(list);
+    setReordering(true);
+    try {
+      await apiFetch("/education/reorder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminPassword: pw, ids: list.map((e) => e.id) }) });
+      qc.invalidateQueries({ queryKey: ["education"] });
+    } catch (err: any) {
+      toast({ title: "Gagal menyimpan urutan", variant: "destructive" });
+      setLocalOrder(null);
+    } finally { setReordering(false); }
+  }
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault(); setSaving(true);
+    try {
+      if (editId !== null) {
+        await apiFetch(`/education/${editId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Pendidikan berhasil diperbarui!" });
+      } else {
+        await apiFetch("/education", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Pendidikan berhasil ditambahkan!" });
+      }
+      closeForm(); setLocalOrder(null);
+      qc.invalidateQueries({ queryKey: ["admin-edu"] }); qc.invalidateQueries({ queryKey: ["education"] });
+    } catch (err: any) { toast({ title: err.message, variant: "destructive" }); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-slate-400 flex items-center gap-1.5"><GripVertical size={13} /> Gunakan tombol ▲▼ untuk mengubah urutan</p>
+        <Button onClick={openAdd} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Pendidikan</Button>
+      </div>
+
+      <AnimatePresence>
+        {showForm && (
+          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-teal-200 p-5 space-y-4">
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-slate-700">{editId !== null ? "✏️ Edit Pendidikan" : "Pendidikan Baru"}</h3>
+              <button type="button" onClick={closeForm}><X size={18} className="text-slate-400" /></button>
+            </div>
+
+            {/* Logo sekolah */}
+            <div className="flex items-center gap-4">
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center">
+                  {form.schoolLogo
+                    ? <img src={form.schoolLogo} alt="logo" className="w-full h-full object-contain p-1" />
+                    : <GraduationCap size={22} className="text-slate-300" />}
+                </div>
+                <label className="absolute -bottom-1.5 -right-1.5 bg-teal-600 text-white rounded-full p-1 cursor-pointer hover:bg-teal-700 transition-colors">
+                  <Camera size={11} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0]; if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setForm({ ...form, schoolLogo: reader.result as string });
+                    reader.readAsDataURL(file);
+                    e.target.value = "";
+                  }} />
+                </label>
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-medium text-slate-700">Logo Sekolah / Kampus</p>
+                <p className="text-xs text-slate-400">Upload logo PNG/JPG (opsional).</p>
+                {form.schoolLogo && (
+                  <button type="button" onClick={() => setForm({ ...form, schoolLogo: "" })} className="text-xs text-red-400 hover:text-red-600 flex items-center gap-1"><X size={11} /> Hapus logo</button>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Nama Sekolah / Kampus *" value={form.institution} onChange={(v) => setForm({ ...form, institution: v })} placeholder="cth: SMKN 1 Cirinten" />
+              <Field label="Jurusan / Program Studi *" value={form.major} onChange={(v) => setForm({ ...form, major: v })} placeholder="cth: Akuntansi & Keuangan" />
+              <Field label="Tahun Lulus *" value={form.year} onChange={(v) => setForm({ ...form, year: v })} placeholder="cth: 2015 atau 2 Semester" />
+            </div>
+
+            <div className="flex gap-3 pt-1">
+              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> {editId !== null ? "Simpan Perubahan" : "Simpan"}</>}</Button>
+              <Button type="button" variant="outline" onClick={closeForm} className="rounded-xl">Batal</Button>
+            </div>
+          </motion.form>
+        )}
+      </AnimatePresence>
+
+      {isLoading ? <div className="py-10 text-center text-slate-400">Memuat...</div> : (
+        <div className="space-y-3">
+          {orderedList.map((edu, idx) => (
+            <div key={edu.id} className={`bg-white rounded-2xl border p-4 flex items-start gap-3 transition-all ${editId === edu.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
+              {/* Urutan buttons */}
+              <div className="flex flex-col gap-0.5 shrink-0 pt-0.5">
+                <button onClick={() => move(idx, "up")} disabled={idx === 0 || reordering} className="p-1 rounded-lg hover:bg-teal-50 text-slate-300 hover:text-teal-500 disabled:opacity-20 transition-colors" title="Pindah ke atas"><ChevronUp size={15} /></button>
+                <span className="text-[10px] text-slate-300 text-center font-mono leading-none">{idx + 1}</span>
+                <button onClick={() => move(idx, "down")} disabled={idx === orderedList.length - 1 || reordering} className="p-1 rounded-lg hover:bg-teal-50 text-slate-300 hover:text-teal-500 disabled:opacity-20 transition-colors" title="Pindah ke bawah"><ChevronDown size={15} /></button>
+              </div>
+
+              {/* Logo */}
+              <div className="w-10 h-10 rounded-lg border border-slate-100 bg-slate-50 overflow-hidden flex items-center justify-center shrink-0">
+                {edu.schoolLogo
+                  ? <img src={edu.schoolLogo} alt={edu.institution} className="w-full h-full object-contain p-1" />
+                  : <GraduationCap size={16} className="text-slate-300" />}
+              </div>
+
+              {/* Konten */}
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm text-slate-800">{edu.institution}</p>
+                <p className="text-sm text-slate-500">{edu.major}</p>
+                <p className="text-xs text-teal-600 font-medium mt-0.5">{edu.year}</p>
+              </div>
+
+              {/* Aksi */}
+              <div className="flex gap-1 shrink-0">
+                <button onClick={() => openEdit(edu)} className="text-teal-500 hover:text-teal-700 transition-colors p-1.5 rounded-lg hover:bg-teal-50" title="Edit"><Pencil size={14} /></button>
+                <button onClick={() => { if (confirm(`Hapus "${edu.institution}"?`)) del.mutate(edu.id); }} className="text-red-400 hover:text-red-600 transition-colors p-1.5 rounded-lg hover:bg-red-50" title="Hapus"><Trash2 size={14} /></button>
+              </div>
+            </div>
+          ))}
+          {orderedList.length === 0 && (
+            <div className="py-10 text-center text-slate-400 text-sm">Belum ada data pendidikan. Klik "Tambah Pendidikan" untuk mulai.</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 
 export default function Admin() {
@@ -734,6 +900,7 @@ export default function Admin() {
           <p className="text-sm text-slate-500">
             {tab === "profil" && "Edit informasi pribadi, kontak, dan sosial media"}
             {tab === "pengalaman" && "Kelola riwayat pengalaman kerja"}
+            {tab === "pendidikan" && "Kelola riwayat pendidikan dan logo sekolah"}
             {tab === "sertifikat" && "Upload dan hapus sertifikat pelatihan"}
             {tab === "dokumentasi" && "Tambah foto kerja before-proses-after"}
           </p>
@@ -741,6 +908,7 @@ export default function Admin() {
 
         {tab === "profil" && <ProfilTab pw={pw} />}
         {tab === "pengalaman" && <PengalamanTab pw={pw} />}
+        {tab === "pendidikan" && <PendidikanTab pw={pw} />}
         {tab === "sertifikat" && <SertifikatTab pw={pw} />}
         {tab === "dokumentasi" && <DokumentasiTab pw={pw} />}
       </div>
