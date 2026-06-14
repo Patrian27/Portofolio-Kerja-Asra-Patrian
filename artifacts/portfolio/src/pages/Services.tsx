@@ -134,7 +134,11 @@ export default function Pengalaman() {
                           )}
                         </div>
                         {Array.isArray(exp.via) && exp.via.length > 0 && (
-                          <p className="text-xs text-muted-foreground/70 mt-0.5">via {exp.via.join(" · ")}</p>
+                          <div className="mt-0.5 space-y-0.5">
+                            {exp.via.map((v: string, i: number) => (
+                              <p key={i} className="text-xs text-muted-foreground/70">via {v}</p>
+                            ))}
+                          </div>
                         )}
                         <p className="text-xs text-muted-foreground mt-0.5">{exp.location}</p>
                       </div>
