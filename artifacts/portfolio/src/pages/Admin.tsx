@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock, Plus, X, Trash2, CheckCircle, Upload, Image,
-  User, Briefcase, Award, Camera, ChevronDown, Edit3, Save
+  User, Briefcase, Award, Camera, ChevronDown, Edit3, Save, Pencil
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -223,6 +223,7 @@ function PengalamanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyExp);
   const [saving, setSaving] = useState(false);
 
@@ -234,12 +235,25 @@ function PengalamanTab({ pw }: { pw: string }) {
     onError: (e: any) => toast({ title: e.message, variant: "destructive" }),
   });
 
+  function openAdd() { setEditId(null); setForm(emptyExp); setShowForm(true); }
+  function openEdit(exp: any) {
+    setEditId(exp.id);
+    setForm({ role: exp.role, company: exp.company, via: exp.via ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
+    setShowForm(true);
+  }
+  function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
+
   async function save(e: React.FormEvent) {
     e.preventDefault(); setSaving(true);
     try {
-      await apiFetch("/experiences", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
-      toast({ title: "Pengalaman berhasil ditambahkan!" });
-      setForm(emptyExp); setShowForm(false);
+      if (editId !== null) {
+        await apiFetch(`/experiences/${editId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Pengalaman berhasil diperbarui!" });
+      } else {
+        await apiFetch("/experiences", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Pengalaman berhasil ditambahkan!" });
+      }
+      closeForm();
       qc.invalidateQueries({ queryKey: ["admin-exps"] }); qc.invalidateQueries({ queryKey: ["experiences"] });
     } catch (err: any) { toast({ title: err.message, variant: "destructive" }); }
     finally { setSaving(false); }
@@ -248,15 +262,15 @@ function PengalamanTab({ pw }: { pw: string }) {
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <Button onClick={() => setShowForm(!showForm)} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Pengalaman</Button>
+        <Button onClick={openAdd} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Pengalaman</Button>
       </div>
 
       <AnimatePresence>
         {showForm && (
-          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-teal-200 p-5 space-y-4">
             <div className="flex items-center justify-between mb-1">
-              <h3 className="font-bold text-slate-700">Pengalaman Baru</h3>
-              <button type="button" onClick={() => setShowForm(false)}><X size={18} className="text-slate-400" /></button>
+              <h3 className="font-bold text-slate-700">{editId !== null ? "✏️ Edit Pengalaman" : "Pengalaman Baru"}</h3>
+              <button type="button" onClick={closeForm}><X size={18} className="text-slate-400" /></button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Posisi / Jabatan *" value={form.role} onChange={(v) => setForm({ ...form, role: v })} placeholder="cth: Office Boy" />
@@ -267,8 +281,8 @@ function PengalamanTab({ pw }: { pw: string }) {
             </div>
             <TagsField label="Tugas & Tanggung Jawab (tekan Enter untuk tambah)" values={form.responsibilities} onChange={(v) => setForm({ ...form, responsibilities: v })} />
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> Simpan</>}</Button>
-              <Button type="button" variant="outline" onClick={() => { setForm(emptyExp); setShowForm(false); }} className="rounded-xl">Batal</Button>
+              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> {editId !== null ? "Simpan Perubahan" : "Simpan"}</>}</Button>
+              <Button type="button" variant="outline" onClick={closeForm} className="rounded-xl">Batal</Button>
             </div>
           </motion.form>
         )}
@@ -277,7 +291,7 @@ function PengalamanTab({ pw }: { pw: string }) {
       {isLoading ? <div className="py-10 text-center text-slate-400">Memuat...</div> : (
         <div className="space-y-3">
           {exps.map((exp) => (
-            <div key={exp.id} className="bg-white rounded-2xl border border-slate-200 p-5 flex items-start justify-between gap-4">
+            <div key={exp.id} className={`bg-white rounded-2xl border p-5 flex items-start justify-between gap-4 transition-all ${editId === exp.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-slate-800">{exp.role}</p>
                 <p className="text-sm text-slate-500">{exp.company}{exp.via ? ` · ${exp.via}` : ""}</p>
@@ -291,7 +305,10 @@ function PengalamanTab({ pw }: { pw: string }) {
                   </ul>
                 )}
               </div>
-              <button onClick={() => { if (confirm(`Hapus "${exp.role}"?`)) del.mutate(exp.id); }} className="text-red-400 hover:text-red-600 transition-colors shrink-0"><Trash2 size={16} /></button>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => openEdit(exp)} className="text-teal-500 hover:text-teal-700 transition-colors p-1" title="Edit"><Pencil size={15} /></button>
+                <button onClick={() => { if (confirm(`Hapus "${exp.role}"?`)) del.mutate(exp.id); }} className="text-red-400 hover:text-red-600 transition-colors p-1" title="Hapus"><Trash2 size={15} /></button>
+              </div>
             </div>
           ))}
         </div>
@@ -309,6 +326,7 @@ function SertifikatTab({ pw }: { pw: string }) {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyCert);
   const [saving, setSaving] = useState(false);
 
@@ -320,14 +338,27 @@ function SertifikatTab({ pw }: { pw: string }) {
     onError: (e: any) => toast({ title: e.message, variant: "destructive" }),
   });
 
+  function openAdd() { setEditId(null); setForm(emptyCert); setShowForm(true); }
+  function openEdit(cert: any) {
+    setEditId(cert.id);
+    setForm({ title: cert.title, issuer: cert.issuer, date: cert.date, category: cert.category, image: cert.image });
+    setShowForm(true);
+  }
+  function closeForm() { setShowForm(false); setEditId(null); setForm(emptyCert); }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.image) { toast({ title: "Foto sertifikat wajib diisi!", variant: "destructive" }); return; }
+    if (!editId && !form.image) { toast({ title: "Foto sertifikat wajib diisi!", variant: "destructive" }); return; }
     setSaving(true);
     try {
-      await apiFetch("/certificates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
-      toast({ title: "Sertifikat berhasil ditambahkan!" });
-      setForm(emptyCert); setShowForm(false);
+      if (editId !== null) {
+        await apiFetch(`/certificates/${editId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Sertifikat berhasil diperbarui!" });
+      } else {
+        await apiFetch("/certificates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Sertifikat berhasil ditambahkan!" });
+      }
+      closeForm();
       qc.invalidateQueries({ queryKey: ["admin-certs"] }); qc.invalidateQueries({ queryKey: ["certificates"] });
     } catch (err: any) { toast({ title: err.message, variant: "destructive" }); }
     finally { setSaving(false); }
@@ -336,15 +367,15 @@ function SertifikatTab({ pw }: { pw: string }) {
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <Button onClick={() => setShowForm(!showForm)} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Sertifikat</Button>
+        <Button onClick={openAdd} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Sertifikat</Button>
       </div>
 
       <AnimatePresence>
         {showForm && (
-          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-teal-200 p-5 space-y-4">
             <div className="flex items-center justify-between mb-1">
-              <h3 className="font-bold text-slate-700">Sertifikat Baru</h3>
-              <button type="button" onClick={() => setShowForm(false)}><X size={18} className="text-slate-400" /></button>
+              <h3 className="font-bold text-slate-700">{editId !== null ? "✏️ Edit Sertifikat" : "Sertifikat Baru"}</h3>
+              <button type="button" onClick={closeForm}><X size={18} className="text-slate-400" /></button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2"><Field label="Nama Sertifikat *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} placeholder="cth: Pelatihan K3 Dasar" /></div>
@@ -360,10 +391,16 @@ function SertifikatTab({ pw }: { pw: string }) {
                 </div>
               </div>
             </div>
-            <SingleImagePicker label="Foto / Scan Sertifikat *" required value={form.image} onChange={(v) => setForm({ ...form, image: v })} />
+            <SingleImagePicker
+              label={editId !== null ? "Ganti Foto Sertifikat (kosongkan jika tidak diganti)" : "Foto / Scan Sertifikat *"}
+              required={editId === null}
+              value={form.image}
+              onChange={(v) => setForm({ ...form, image: v })}
+            />
+            {editId !== null && !form.image && <p className="text-xs text-slate-400 -mt-2">Foto sertifikat lama tetap digunakan jika tidak diganti.</p>}
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> Simpan</>}</Button>
-              <Button type="button" variant="outline" onClick={() => { setForm(emptyCert); setShowForm(false); }} className="rounded-xl">Batal</Button>
+              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> {editId !== null ? "Simpan Perubahan" : "Simpan"}</>}</Button>
+              <Button type="button" variant="outline" onClick={closeForm} className="rounded-xl">Batal</Button>
             </div>
           </motion.form>
         )}
@@ -372,15 +409,18 @@ function SertifikatTab({ pw }: { pw: string }) {
       {isLoading ? <div className="py-10 text-center text-slate-400">Memuat...</div> : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {certs.map((cert) => (
-            <motion.div key={cert.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <motion.div key={cert.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`bg-white rounded-2xl border overflow-hidden transition-all ${editId === cert.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
               <div className="relative h-32">
                 <img src={cert.image} alt={cert.title} className="w-full h-full object-cover object-top" onError={(e) => { (e.target as HTMLImageElement).src = "https://placehold.co/400x200/e2e8f0/94a3b8?text=Sertifikat"; }} />
                 <span className="absolute top-2 left-2 bg-teal-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">{cert.category}</span>
               </div>
               <div className="p-3">
                 <p className="text-xs font-bold text-slate-700 line-clamp-2 mb-1">{cert.title}</p>
-                <p className="text-[10px] text-slate-400">{cert.date}</p>
-                <button onClick={() => { if (confirm(`Hapus "${cert.title}"?`)) del.mutate(cert.id); }} className="flex items-center gap-1 text-[11px] text-red-400 hover:text-red-600 mt-2 font-medium"><Trash2 size={12} /> Hapus</button>
+                <p className="text-[10px] text-slate-400">{cert.issuer} · {cert.date}</p>
+                <div className="flex items-center gap-3 mt-2">
+                  <button onClick={() => openEdit(cert)} className="flex items-center gap-1 text-[11px] text-teal-500 hover:text-teal-700 font-medium"><Pencil size={11} /> Edit</button>
+                  <button onClick={() => { if (confirm(`Hapus "${cert.title}"?`)) del.mutate(cert.id); }} className="flex items-center gap-1 text-[11px] text-red-400 hover:text-red-600 font-medium"><Trash2 size={11} /> Hapus</button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -403,6 +443,7 @@ function DokumentasiTab({ pw }: { pw: string }) {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyDoc);
   const [saving, setSaving] = useState(false);
 
@@ -414,14 +455,31 @@ function DokumentasiTab({ pw }: { pw: string }) {
     onError: (e: any) => toast({ title: e.message, variant: "destructive" }),
   });
 
+  function openAdd() { setEditId(null); setForm(emptyDoc); setShowForm(true); }
+  function openEdit(doc: any) {
+    setEditId(doc.id);
+    setForm({
+      title: doc.title, category: doc.category, company: doc.company,
+      location: doc.location ?? "", date: doc.date, description: doc.description ?? "",
+      imageBefore: doc.imageBefore ?? "", imageProgress: doc.imageProgress ?? "", imageAfter: doc.imageAfter,
+    });
+    setShowForm(true);
+  }
+  function closeForm() { setShowForm(false); setEditId(null); setForm(emptyDoc); }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.imageAfter) { toast({ title: "Foto Sesudah wajib diisi!", variant: "destructive" }); return; }
+    if (!editId && !form.imageAfter) { toast({ title: "Foto Sesudah wajib diisi!", variant: "destructive" }); return; }
     setSaving(true);
     try {
-      await apiFetch("/docs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
-      toast({ title: "Dokumentasi berhasil ditambahkan!" });
-      setForm(emptyDoc); setShowForm(false);
+      if (editId !== null) {
+        await apiFetch(`/docs/${editId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Dokumentasi berhasil diperbarui!" });
+      } else {
+        await apiFetch("/docs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
+        toast({ title: "Dokumentasi berhasil ditambahkan!" });
+      }
+      closeForm();
       qc.invalidateQueries({ queryKey: ["admin-docs"] }); qc.invalidateQueries({ queryKey: ["work-docs"] });
     } catch (err: any) { toast({ title: err.message, variant: "destructive" }); }
     finally { setSaving(false); }
@@ -430,15 +488,15 @@ function DokumentasiTab({ pw }: { pw: string }) {
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <Button onClick={() => setShowForm(!showForm)} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Dokumentasi</Button>
+        <Button onClick={openAdd} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Dokumentasi</Button>
       </div>
 
       <AnimatePresence>
         {showForm && (
-          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-slate-200 p-5 space-y-5">
+          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} onSubmit={save} className="overflow-hidden bg-white rounded-2xl border border-teal-200 p-5 space-y-5">
             <div className="flex items-center justify-between mb-1">
-              <h3 className="font-bold text-slate-700">Dokumentasi Baru</h3>
-              <button type="button" onClick={() => setShowForm(false)}><X size={18} className="text-slate-400" /></button>
+              <h3 className="font-bold text-slate-700">{editId !== null ? "✏️ Edit Dokumentasi" : "Dokumentasi Baru"}</h3>
+              <button type="button" onClick={closeForm}><X size={18} className="text-slate-400" /></button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2"><Field label="Judul Pekerjaan *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} placeholder="cth: Pembersihan Lantai Lobby" /></div>
@@ -459,11 +517,12 @@ function DokumentasiTab({ pw }: { pw: string }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <ImagePicker label="Sebelum" value={form.imageBefore} onChange={(v) => setForm({ ...form, imageBefore: v })} />
               <ImagePicker label="Proses" value={form.imageProgress} onChange={(v) => setForm({ ...form, imageProgress: v })} />
-              <ImagePicker label="Sesudah" required value={form.imageAfter} onChange={(v) => setForm({ ...form, imageAfter: v })} />
+              <ImagePicker label={editId !== null ? "Sesudah (kosongkan jika tidak diganti)" : "Sesudah"} required={editId === null} value={form.imageAfter} onChange={(v) => setForm({ ...form, imageAfter: v })} />
             </div>
+            {editId !== null && <p className="text-xs text-slate-400 -mt-2">Foto yang dikosongkan tidak akan diubah (foto lama tetap tersimpan).</p>}
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> Simpan</>}</Button>
-              <Button type="button" variant="outline" onClick={() => { setForm(emptyDoc); setShowForm(false); }} className="rounded-xl">Batal</Button>
+              <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> {editId !== null ? "Simpan Perubahan" : "Simpan"}</>}</Button>
+              <Button type="button" variant="outline" onClick={closeForm} className="rounded-xl">Batal</Button>
             </div>
           </motion.form>
         )}
@@ -474,7 +533,7 @@ function DokumentasiTab({ pw }: { pw: string }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {docs.map((doc) => (
-            <motion.div key={doc.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <motion.div key={doc.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`bg-white rounded-2xl border overflow-hidden transition-all ${editId === doc.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
               <div className="relative aspect-[4/3]">
                 <img src={doc.imageAfter} alt={doc.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "https://placehold.co/400x300/e2e8f0/94a3b8?text=Foto"; }} />
                 <span className="absolute top-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">{WORK_CATEGORIES.find((c) => c.value === doc.category)?.label}</span>
@@ -482,7 +541,10 @@ function DokumentasiTab({ pw }: { pw: string }) {
               <div className="p-4">
                 <p className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{doc.title}</p>
                 <p className="text-xs text-slate-500">{doc.company} — {doc.date}</p>
-                <button onClick={() => { if (confirm(`Hapus "${doc.title}"?`)) del.mutate(doc.id); }} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 mt-2 font-medium"><Trash2 size={12} /> Hapus</button>
+                <div className="flex items-center gap-3 mt-2">
+                  <button onClick={() => openEdit(doc)} className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-700 font-medium"><Pencil size={11} /> Edit</button>
+                  <button onClick={() => { if (confirm(`Hapus "${doc.title}"?`)) del.mutate(doc.id); }} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 font-medium"><Trash2 size={12} /> Hapus</button>
+                </div>
               </div>
             </motion.div>
           ))}
