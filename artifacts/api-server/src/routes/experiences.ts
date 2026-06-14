@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, workExperiencesTable } from "@workspace/db";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, inArray } from "drizzle-orm";
 
 const router = Router();
 
@@ -67,6 +67,24 @@ router.put("/experiences/:id", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });
+  }
+});
+
+router.post("/experiences/reorder", async (req, res) => {
+  try {
+    const { adminPassword, ids } = req.body;
+    if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
+    if (!Array.isArray(ids)) return res.status(400).json({ error: "ids harus array" });
+
+    await Promise.all(
+      ids.map((id: number, index: number) =>
+        db.update(workExperiencesTable).set({ sortOrder: index }).where(eq(workExperiencesTable.id, id))
+      )
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Gagal menyimpan urutan" });
   }
 });
 

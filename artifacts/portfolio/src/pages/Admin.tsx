@@ -2,7 +2,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock, Plus, X, Trash2, CheckCircle, Upload, Image,
-  User, Briefcase, Award, Camera, ChevronDown, Edit3, Save, Pencil
+  User, Briefcase, Award, Camera, ChevronDown, Edit3, Save, Pencil,
+  ChevronUp, GripVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -226,12 +227,19 @@ function PengalamanTab({ pw }: { pw: string }) {
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyExp);
   const [saving, setSaving] = useState(false);
+  const [localOrder, setLocalOrder] = useState<any[] | null>(null);
+  const [reordering, setReordering] = useState(false);
 
-  const { data: exps = [], isLoading } = useQuery<any[]>({ queryKey: ["admin-exps"], queryFn: () => apiFetch("/experiences") });
+  const { data: exps = [], isLoading } = useQuery<any[]>({
+    queryKey: ["admin-exps"],
+    queryFn: () => apiFetch("/experiences"),
+  });
+
+  const orderedExps = localOrder ?? exps;
 
   const del = useMutation({
     mutationFn: (id: number) => apiFetch(`/experiences/${id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminPassword: pw }) }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-exps"] }); qc.invalidateQueries({ queryKey: ["experiences"] }); toast({ title: "Berhasil dihapus!" }); },
+    onSuccess: () => { setLocalOrder(null); qc.invalidateQueries({ queryKey: ["admin-exps"] }); qc.invalidateQueries({ queryKey: ["experiences"] }); toast({ title: "Berhasil dihapus!" }); },
     onError: (e: any) => toast({ title: e.message, variant: "destructive" }),
   });
 
@@ -243,6 +251,26 @@ function PengalamanTab({ pw }: { pw: string }) {
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
 
+  async function move(index: number, dir: "up" | "down") {
+    const list = [...orderedExps];
+    const swapIdx = dir === "up" ? index - 1 : index + 1;
+    if (swapIdx < 0 || swapIdx >= list.length) return;
+    [list[index], list[swapIdx]] = [list[swapIdx], list[index]];
+    setLocalOrder(list);
+    setReordering(true);
+    try {
+      await apiFetch("/experiences/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminPassword: pw, ids: list.map((e) => e.id) }),
+      });
+      qc.invalidateQueries({ queryKey: ["experiences"] });
+    } catch (err: any) {
+      toast({ title: "Gagal menyimpan urutan", variant: "destructive" });
+      setLocalOrder(null);
+    } finally { setReordering(false); }
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault(); setSaving(true);
     try {
@@ -253,7 +281,7 @@ function PengalamanTab({ pw }: { pw: string }) {
         await apiFetch("/experiences", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, adminPassword: pw }) });
         toast({ title: "Pengalaman berhasil ditambahkan!" });
       }
-      closeForm();
+      closeForm(); setLocalOrder(null);
       qc.invalidateQueries({ queryKey: ["admin-exps"] }); qc.invalidateQueries({ queryKey: ["experiences"] });
     } catch (err: any) { toast({ title: err.message, variant: "destructive" }); }
     finally { setSaving(false); }
@@ -261,7 +289,8 @@ function PengalamanTab({ pw }: { pw: string }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-slate-400 flex items-center gap-1.5"><GripVertical size={13} /> Gunakan tombol ▲▼ untuk mengubah urutan</p>
         <Button onClick={openAdd} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2"><Plus size={15} /> Tambah Pengalaman</Button>
       </div>
 
@@ -290,8 +319,26 @@ function PengalamanTab({ pw }: { pw: string }) {
 
       {isLoading ? <div className="py-10 text-center text-slate-400">Memuat...</div> : (
         <div className="space-y-3">
-          {exps.map((exp) => (
-            <div key={exp.id} className={`bg-white rounded-2xl border p-5 flex items-start justify-between gap-4 transition-all ${editId === exp.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
+          {orderedExps.map((exp, idx) => (
+            <div key={exp.id} className={`bg-white rounded-2xl border p-4 flex items-start gap-3 transition-all ${editId === exp.id ? "border-teal-400 shadow-md" : "border-slate-200"}`}>
+              {/* Urutan buttons */}
+              <div className="flex flex-col gap-0.5 shrink-0 pt-0.5">
+                <button
+                  onClick={() => move(idx, "up")}
+                  disabled={idx === 0 || reordering}
+                  className="p-1 rounded-lg hover:bg-teal-50 text-slate-300 hover:text-teal-500 disabled:opacity-20 transition-colors"
+                  title="Pindah ke atas"
+                ><ChevronUp size={15} /></button>
+                <span className="text-[10px] text-slate-300 text-center font-mono leading-none">{idx + 1}</span>
+                <button
+                  onClick={() => move(idx, "down")}
+                  disabled={idx === orderedExps.length - 1 || reordering}
+                  className="p-1 rounded-lg hover:bg-teal-50 text-slate-300 hover:text-teal-500 disabled:opacity-20 transition-colors"
+                  title="Pindah ke bawah"
+                ><ChevronDown size={15} /></button>
+              </div>
+
+              {/* Konten */}
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-slate-800">{exp.role}</p>
                 <p className="text-sm text-slate-500">{exp.company}{exp.via ? ` · ${exp.via}` : ""}</p>
@@ -305,9 +352,11 @@ function PengalamanTab({ pw }: { pw: string }) {
                   </ul>
                 )}
               </div>
-              <div className="flex gap-2 shrink-0">
-                <button onClick={() => openEdit(exp)} className="text-teal-500 hover:text-teal-700 transition-colors p-1" title="Edit"><Pencil size={15} /></button>
-                <button onClick={() => { if (confirm(`Hapus "${exp.role}"?`)) del.mutate(exp.id); }} className="text-red-400 hover:text-red-600 transition-colors p-1" title="Hapus"><Trash2 size={15} /></button>
+
+              {/* Aksi */}
+              <div className="flex gap-1 shrink-0">
+                <button onClick={() => openEdit(exp)} className="text-teal-500 hover:text-teal-700 transition-colors p-1.5 rounded-lg hover:bg-teal-50" title="Edit"><Pencil size={14} /></button>
+                <button onClick={() => { if (confirm(`Hapus "${exp.role}"?`)) del.mutate(exp.id); }} className="text-red-400 hover:text-red-600 transition-colors p-1.5 rounded-lg hover:bg-red-50" title="Hapus"><Trash2 size={14} /></button>
               </div>
             </div>
           ))}
