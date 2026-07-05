@@ -18,7 +18,7 @@ export function Navbar() {
   const navLinks = [
     { name: "Beranda", path: "/" },
     { name: "Dokumentasi Kerja", path: "/dokumentasi" },
-    { name: "Pengalaman", path: "/pengalaman" },
+    { name: "Pengalaman & Pendidikan", path: "/pengalaman" },
     { name: "Sertifikat", path: "/sertifikat" },
     { name: "Kontak", path: "/kontak" },
   ];
