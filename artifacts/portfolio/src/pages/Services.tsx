@@ -70,7 +70,7 @@ function SkillBar({ name, level }: { name: string; level: number }) {
 function LogoModal({ src, company, onClose }: { src: string; company: string; onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <motion.div
@@ -78,12 +78,14 @@ function LogoModal({ src, company, onClose }: { src: string; company: string; on
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.85 }}
         transition={{ duration: 0.2 }}
-        className="bg-white rounded-2xl p-8 shadow-2xl max-w-xs w-full mx-4 flex flex-col items-center gap-4"
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 flex flex-col items-center gap-3 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <img src={src} alt={company} className="w-48 h-48 object-contain" />
-        <p className="text-sm font-semibold text-slate-700 text-center">{company}</p>
-        <button onClick={onClose} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Tutup</button>
+        <img src={src} alt={company} className="w-full max-h-[75vh] object-contain" />
+        <div className="px-6 pb-5 flex flex-col items-center gap-2 w-full">
+          <p className="text-sm font-semibold text-slate-700 text-center">{company}</p>
+          <button onClick={onClose} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">✕ Tutup</button>
+        </div>
       </motion.div>
     </div>
   );
@@ -204,30 +206,38 @@ export default function Pengalaman() {
                 {Array.isArray(exp.media) && exp.media.length > 0 && (
                   <div className="mt-5 pt-4 border-t border-border">
                     <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">📎 Media & Lampiran</p>
-                    <div className="flex flex-wrap gap-2">
-                      {exp.media.map((m: any, i: number) => {
-                        if (m.type === "link") {
-                          return (
-                            <a key={i} href={m.url} target="_blank" rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-xs bg-primary/5 border border-primary/20 text-primary rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors font-medium">
-                              <ExternalLink size={11} />
-                              {m.label}
-                            </a>
-                          );
-                        }
-                        if (m.type === "image") {
-                          return (
-                            <button key={i} type="button"
-                              onClick={() => setLogoModal({ src: m.data, company: m.label })}
-                              className="flex items-center gap-1.5 text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-1.5 hover:bg-amber-100 transition-colors font-medium">
-                              <ImageIcon size={11} />
-                              {m.label}
-                            </button>
-                          );
-                        }
-                        return null;
-                      })}
-                    </div>
+                    {/* Links */}
+                    {exp.media.some((m: any) => m.type === "link") && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {exp.media.filter((m: any) => m.type === "link").map((m: any, i: number) => (
+                          <a key={i} href={m.url} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-xs bg-primary/5 border border-primary/20 text-primary rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors font-medium">
+                            <ExternalLink size={11} />
+                            {m.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    {/* Images — tampil langsung sebagai thumbnail */}
+                    {exp.media.some((m: any) => m.type === "image") && (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {exp.media.filter((m: any) => m.type === "image").map((m: any, i: number) => (
+                          <button key={i} type="button"
+                            onClick={() => setLogoModal({ src: m.data, company: m.label })}
+                            className="group relative rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video hover:ring-2 hover:ring-primary/50 transition-all cursor-zoom-in">
+                            <img src={m.data} alt={m.label} className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                              <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2 py-1 rounded-md">🔍 Perbesar</span>
+                            </div>
+                            {m.label && (
+                              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                                <p className="text-white text-[10px] font-medium truncate">{m.label}</p>
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>
