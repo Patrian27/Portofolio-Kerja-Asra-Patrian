@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail } from "lucide-react";
+import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { profile as staticProfile, workDocs } from "@/data/data";
@@ -51,9 +51,20 @@ export default function Home() {
     staleTime: 30000,
   });
 
+  const { data: apiEducation } = useQuery<any[]>({
+    queryKey: ["education"],
+    queryFn: async () => {
+      const res = await fetch("/api/education");
+      if (!res.ok) throw new Error("Gagal");
+      return res.json();
+    },
+    staleTime: 30000,
+  });
+
   const profile = apiProfile ?? staticProfile;
   const profilePhoto = apiProfile?.profilePhoto || "/images/profile-nobg.png";
   const experiences = apiExps ?? [];
+  const educationList = apiEducation ?? [];
 
   return (
     <div className="overflow-hidden">
@@ -312,6 +323,62 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Riwayat Pendidikan */}
+      {educationList.length > 0 && (
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+            <motion.div
+              className="flex items-end justify-between mb-8"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <div>
+                <Badge className="mb-2 bg-primary/10 text-primary border-primary/20">Pendidikan</Badge>
+                <h2 className="text-3xl font-bold">Riwayat Pendidikan</h2>
+              </div>
+              <Link href="/pengalaman">
+                <Button variant="outline" className="rounded-full px-5 hidden md:flex">
+                  Selengkapnya <ChevronRight size={15} className="ml-1" />
+                </Button>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              className="space-y-4"
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              {educationList.map((edu: any) => (
+                <motion.div
+                  key={edu.id}
+                  variants={fadeUp}
+                  className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center hover:shadow-md transition-all"
+                >
+                  <div
+                    className={`w-12 h-12 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${edu.schoolLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
+                    onClick={() => edu.schoolLogo && setLogoModal({ src: edu.schoolLogo, company: edu.institution })}
+                    title={edu.schoolLogo ? "Klik untuk perbesar" : undefined}
+                  >
+                    {edu.schoolLogo
+                      ? <img src={edu.schoolLogo} alt={edu.institution} className="w-full h-full object-contain p-1" />
+                      : <GraduationCap size={20} className="text-primary" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-base">{edu.institution}</h3>
+                    <p className="text-muted-foreground text-sm">{edu.major}</p>
+                  </div>
+                  <Badge variant="outline" className="rounded-full text-xs shrink-0">{edu.year}</Badge>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* Dokumentasi Terbaru */}
       <section className="py-20 bg-background">
