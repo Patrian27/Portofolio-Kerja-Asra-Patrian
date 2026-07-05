@@ -28,6 +28,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/dokumentasi" component={Portfolio} />
           <Route path="/pengalaman" component={Pengalaman} />
+          <Route path="/pendidikan" component={Pendidikan} />
           <Route path="/kontak" component={Kontak} />
           <Route path="/sertifikat" component={Sertifikat} />
           <Route path="/admin" component={Admin} />
