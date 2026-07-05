@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
 import Pengalaman from "@/pages/Services";
+import Pendidikan from "@/pages/Pendidikan";
 import Kontak from "@/pages/About";
 import Sertifikat from "@/pages/Sertifikat";
 import Admin from "@/pages/Admin";
