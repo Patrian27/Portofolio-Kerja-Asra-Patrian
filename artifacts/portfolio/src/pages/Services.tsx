@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Briefcase, Star, GraduationCap, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { CheckCircle2, Briefcase, Star, GraduationCap, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
@@ -254,21 +254,59 @@ export default function Pengalaman() {
           </motion.div>
           <motion.div className="space-y-4" variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             {educationList.map((edu: any) => (
-              <motion.div key={edu.id} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-6 flex gap-4 items-center">
-                <div
-                  className={`w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${edu.schoolLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
-                  onClick={() => edu.schoolLogo && setLogoModal({ src: edu.schoolLogo, company: edu.institution })}
-                  title={edu.schoolLogo ? "Klik untuk perbesar" : undefined}
-                >
-                  {edu.schoolLogo
-                    ? <img src={edu.schoolLogo} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
-                    : <GraduationCap size={22} className="text-primary" />}
+              <motion.div key={edu.id} variants={fadeUp} className="bg-card border border-card-border rounded-2xl p-6 hover:shadow-lg transition-all">
+                <div className="flex gap-4 items-center">
+                  <div
+                    className={`w-14 h-14 rounded-xl border border-border bg-muted/30 overflow-hidden flex items-center justify-center shrink-0 ${edu.schoolLogo ? "cursor-zoom-in hover:ring-2 hover:ring-primary/40 transition-all" : ""}`}
+                    onClick={() => edu.schoolLogo && setLogoModal({ src: edu.schoolLogo, company: edu.institution })}
+                    title={edu.schoolLogo ? "Klik untuk perbesar" : undefined}
+                  >
+                    {edu.schoolLogo
+                      ? <img src={edu.schoolLogo} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
+                      : <GraduationCap size={22} className="text-primary" />}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold">{edu.institution}</h3>
+                    <p className="text-muted-foreground text-sm">{edu.major}</p>
+                  </div>
+                  <Badge variant="outline" className="rounded-full text-xs shrink-0">{edu.year}</Badge>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-bold">{edu.institution}</h3>
-                  <p className="text-muted-foreground text-sm">{edu.major}</p>
-                </div>
-                <Badge variant="outline" className="rounded-full text-xs shrink-0">{edu.year}</Badge>
+                {/* Media & Lampiran */}
+                {Array.isArray(edu.media) && edu.media.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">📎 Media & Lampiran</p>
+                    {edu.media.some((m: any) => m.type === "link") && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {edu.media.filter((m: any) => m.type === "link").map((m: any, i: number) => (
+                          <a key={i} href={m.url} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-xs bg-primary/5 border border-primary/20 text-primary rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors font-medium">
+                            <ExternalLink size={11} />
+                            {m.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    {edu.media.some((m: any) => m.type === "image") && (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {edu.media.filter((m: any) => m.type === "image").map((m: any, i: number) => (
+                          <button key={i} type="button"
+                            onClick={() => setLogoModal({ src: m.data, company: m.label })}
+                            className="group relative rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video hover:ring-2 hover:ring-primary/50 transition-all cursor-zoom-in">
+                            <img src={m.data} alt={m.label} className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                              <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2 py-1 rounded-md">🔍 Perbesar</span>
+                            </div>
+                            {m.label && (
+                              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                                <p className="text-white text-[10px] font-medium truncate">{m.label}</p>
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </motion.div>
             ))}
           </motion.div>

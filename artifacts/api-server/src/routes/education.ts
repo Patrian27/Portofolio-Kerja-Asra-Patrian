@@ -9,7 +9,7 @@ const AUTH_PASSWORD = process.env.ADMIN_PASSWORD ?? "asra2024";
 router.get("/education", async (req, res) => {
   try {
     const rows = await db.select().from(educationTable).orderBy(asc(educationTable.sortOrder), asc(educationTable.id));
-    res.json(rows);
+    res.json(rows.map(r => ({ ...r, media: JSON.parse(r.media ?? "[]") })));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal mengambil data" });
@@ -18,7 +18,7 @@ router.get("/education", async (req, res) => {
 
 router.post("/education", async (req, res) => {
   try {
-    const { adminPassword, institution, major, year, schoolLogo, sortOrder } = req.body;
+    const { adminPassword, institution, major, year, schoolLogo, sortOrder, media } = req.body;
     if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
     if (!institution || !major || !year) return res.status(400).json({ error: "Data tidak lengkap" });
 
@@ -27,10 +27,11 @@ router.post("/education", async (req, res) => {
       major,
       year,
       schoolLogo: schoolLogo || null,
+      media: Array.isArray(media) ? JSON.stringify(media) : "[]",
       sortOrder: sortOrder ?? 0,
     }).returning();
 
-    res.status(201).json(row);
+    res.status(201).json({ ...row, media: JSON.parse(row.media ?? "[]") });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });
@@ -39,7 +40,7 @@ router.post("/education", async (req, res) => {
 
 router.put("/education/:id", async (req, res) => {
   try {
-    const { adminPassword, institution, major, year, schoolLogo } = req.body;
+    const { adminPassword, institution, major, year, schoolLogo, media } = req.body;
     if (adminPassword !== AUTH_PASSWORD) return res.status(401).json({ error: "Password admin salah" });
     if (!institution || !major || !year) return res.status(400).json({ error: "Data tidak lengkap" });
 
@@ -52,10 +53,11 @@ router.put("/education/:id", async (req, res) => {
       major,
       year,
       schoolLogo: schoolLogo !== undefined ? (schoolLogo || null) : existing[0].schoolLogo,
+      media: Array.isArray(media) ? JSON.stringify(media) : existing[0].media,
       sortOrder: existing[0].sortOrder,
     }).where(eq(educationTable.id, id)).returning();
 
-    res.json(row);
+    res.json({ ...row, media: JSON.parse(row.media ?? "[]") });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });

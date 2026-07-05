@@ -62,6 +62,7 @@ export const educationTable = pgTable("education", {
   major: text("major").notNull(),
   year: text("year").notNull(),
   schoolLogo: text("school_logo"),
+  media: text("media").notNull().default("[]"),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

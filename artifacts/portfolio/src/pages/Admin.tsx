@@ -726,7 +726,7 @@ function DokumentasiTab({ pw }: { pw: string }) {
 
 // ─── PENDIDIKAN TAB ──────────────────────────────────────────────────────────
 
-const emptyEdu = { institution: "", major: "", year: "", schoolLogo: "" };
+const emptyEdu = { institution: "", major: "", year: "", schoolLogo: "", media: [] as any[] };
 
 function PendidikanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
@@ -754,7 +754,7 @@ function PendidikanTab({ pw }: { pw: string }) {
   function openAdd() { setEditId(null); setForm(emptyEdu); setShowForm(true); }
   function openEdit(edu: any) {
     setEditId(edu.id);
-    setForm({ institution: edu.institution, major: edu.major, year: edu.year, schoolLogo: edu.schoolLogo ?? "" });
+    setForm({ institution: edu.institution, major: edu.major, year: edu.year, schoolLogo: edu.schoolLogo ?? "", media: Array.isArray(edu.media) ? edu.media : [] });
     setShowForm(true);
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyEdu); }
@@ -838,6 +838,54 @@ function PendidikanTab({ pw }: { pw: string }) {
               <Field label="Nama Sekolah / Kampus *" value={form.institution} onChange={(v) => setForm({ ...form, institution: v })} placeholder="cth: SMKN 1 Cirinten" />
               <Field label="Jurusan / Program Studi *" value={form.major} onChange={(v) => setForm({ ...form, major: v })} placeholder="cth: Akuntansi & Keuangan" />
               <Field label="Tahun Lulus *" value={form.year} onChange={(v) => setForm({ ...form, year: v })} placeholder="cth: 2015 atau 2 Semester" />
+            </div>
+
+            {/* Media & Lampiran */}
+            <div className="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50/50">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-slate-700">📎 Media & Lampiran</p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => {
+                    const label = prompt("Label link (cth: Sertifikat Online)");
+                    if (!label) return;
+                    const url = prompt("URL link");
+                    if (!url) return;
+                    setForm({ ...form, media: [...form.media, { type: "link", label, url }] });
+                  }} className="text-xs bg-teal-50 text-teal-700 border border-teal-200 rounded-lg px-2.5 py-1.5 hover:bg-teal-100 transition-colors font-medium flex items-center gap-1">
+                    <Link size={11} /> Tambah Link
+                  </button>
+                  <label className="text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-lg px-2.5 py-1.5 hover:bg-amber-100 transition-colors font-medium flex items-center gap-1 cursor-pointer">
+                    <Camera size={11} /> Upload Foto
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                      const file = e.target.files?.[0]; if (!file) return;
+                      const label = file.name.replace(/\.[^/.]+$/, "");
+                      const reader = new FileReader();
+                      reader.onload = () => setForm({ ...form, media: [...form.media, { type: "image", label, data: reader.result as string }] });
+                      reader.readAsDataURL(file);
+                      e.target.value = "";
+                    }} />
+                  </label>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-400">Tambahkan foto ijazah, sertifikat prakerin, sertifikat keahlian, atau link.</p>
+              {form.media.length === 0 ? (
+                <p className="text-xs text-slate-400 italic">Belum ada lampiran.</p>
+              ) : (
+                <div className="space-y-2">
+                  {form.media.map((m: any, i: number) => (
+                    <div key={i} className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2">
+                      {m.type === "image"
+                        ? <img src={m.data} alt={m.label} className="w-8 h-8 object-cover rounded border border-slate-200 shrink-0" />
+                        : <div className="w-8 h-8 rounded bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0"><Link size={13} className="text-teal-600" /></div>}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-slate-700 truncate">{m.label}</p>
+                        {m.type === "link" && <p className="text-[10px] text-slate-400 truncate">{m.url}</p>}
+                      </div>
+                      <button type="button" onClick={() => setForm({ ...form, media: form.media.filter((_: any, j: number) => j !== i) })} className="text-red-400 hover:text-red-600 p-1 shrink-0"><X size={12} /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 pt-1">
