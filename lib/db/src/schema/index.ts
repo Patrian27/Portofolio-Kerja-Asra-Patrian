@@ -51,6 +51,7 @@ export const workExperiencesTable = pgTable("work_experiences", {
   period: text("period").notNull(),
   location: text("location").notNull(),
   responsibilities: text("responsibilities").notNull().default("[]"),
+  media: text("media").notNull().default("[]"),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

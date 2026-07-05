@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock, Plus, X, Trash2, CheckCircle, Upload, Image,
   User, Briefcase, Award, Camera, ChevronDown, Edit3, Save, Pencil,
-  ChevronUp, GripVertical, GraduationCap
+  ChevronUp, GripVertical, GraduationCap, Link
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -232,7 +232,7 @@ const EMPLOYMENT_TYPES = [
   { value: "Tidak Tetap", label: "Tidak Tetap (Temporary)" },
 ];
 
-const emptyExp = { role: "", company: "", via: [] as string[], employmentType: "", companyLogo: "", period: "", location: "", responsibilities: [] as string[] };
+const emptyExp = { role: "", company: "", via: [] as string[], employmentType: "", companyLogo: "", period: "", location: "", responsibilities: [] as string[], media: [] as any[] };
 
 function PengalamanTab({ pw }: { pw: string }) {
   const { toast } = useToast();
@@ -260,7 +260,7 @@ function PengalamanTab({ pw }: { pw: string }) {
   function openAdd() { setEditId(null); setForm(emptyExp); setShowForm(true); }
   function openEdit(exp: any) {
     setEditId(exp.id);
-    setForm({ role: exp.role, company: exp.company, via: Array.isArray(exp.via) ? exp.via : (exp.via ? [exp.via] : []), employmentType: exp.employmentType ?? "", companyLogo: exp.companyLogo ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [] });
+    setForm({ role: exp.role, company: exp.company, via: Array.isArray(exp.via) ? exp.via : (exp.via ? [exp.via] : []), employmentType: exp.employmentType ?? "", companyLogo: exp.companyLogo ?? "", period: exp.period, location: exp.location, responsibilities: exp.responsibilities ?? [], media: Array.isArray(exp.media) ? exp.media : [] });
     setShowForm(true);
   }
   function closeForm() { setShowForm(false); setEditId(null); setForm(emptyExp); }
@@ -366,6 +366,55 @@ function PengalamanTab({ pw }: { pw: string }) {
               <Field label="Kota / Lokasi" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="cth: Jakarta" />
             </div>
             <TagsField label="Tugas & Tanggung Jawab (tekan Enter untuk tambah)" values={form.responsibilities} onChange={(v) => setForm({ ...form, responsibilities: v })} />
+
+            {/* Media & Lampiran */}
+            <div className="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50/50">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-slate-700">📎 Media & Lampiran</p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => {
+                    const label = prompt("Label link (cth: Website Perusahaan)");
+                    if (!label) return;
+                    const url = prompt("URL link");
+                    if (!url) return;
+                    setForm({ ...form, media: [...form.media, { type: "link", label, url }] });
+                  }} className="text-xs bg-teal-50 text-teal-700 border border-teal-200 rounded-lg px-2.5 py-1.5 hover:bg-teal-100 transition-colors font-medium flex items-center gap-1">
+                    <Link size={11} /> Tambah Link
+                  </button>
+                  <label className="text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-lg px-2.5 py-1.5 hover:bg-amber-100 transition-colors font-medium flex items-center gap-1 cursor-pointer">
+                    <Camera size={11} /> Upload Gambar
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                      const file = e.target.files?.[0]; if (!file) return;
+                      const label = file.name.replace(/\.[^/.]+$/, "");
+                      const reader = new FileReader();
+                      reader.onload = () => setForm({ ...form, media: [...form.media, { type: "image", label, data: reader.result as string }] });
+                      reader.readAsDataURL(file);
+                      e.target.value = "";
+                    }} />
+                  </label>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-400">Tambahkan surat referensi, paklaring (foto), atau link perusahaan/LinkedIn.</p>
+              {form.media.length === 0 ? (
+                <p className="text-xs text-slate-400 italic">Belum ada lampiran.</p>
+              ) : (
+                <div className="space-y-2">
+                  {form.media.map((m: any, i: number) => (
+                    <div key={i} className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2">
+                      {m.type === "image"
+                        ? <img src={m.data} alt={m.label} className="w-8 h-8 object-cover rounded border border-slate-200 shrink-0" />
+                        : <div className="w-8 h-8 rounded bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0"><Link size={13} className="text-teal-600" /></div>}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-slate-700 truncate">{m.label}</p>
+                        {m.type === "link" && <p className="text-[10px] text-slate-400 truncate">{m.url}</p>}
+                      </div>
+                      <button type="button" onClick={() => setForm({ ...form, media: form.media.filter((_: any, j: number) => j !== i) })} className="text-red-400 hover:text-red-600 p-1 shrink-0"><X size={12} /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-3 pt-1">
               <Button type="submit" disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 flex-1">{saving ? "Menyimpan..." : <><CheckCircle size={14} /> {editId !== null ? "Simpan Perubahan" : "Simpan"}</>}</Button>
               <Button type="button" variant="outline" onClick={closeForm} className="rounded-xl">Batal</Button>

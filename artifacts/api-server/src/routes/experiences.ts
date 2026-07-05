@@ -24,6 +24,7 @@ router.get("/experiences", async (req, res) => {
       ...r,
       responsibilities: JSON.parse(r.responsibilities || "[]"),
       via: parseVia(r.via),
+      media: JSON.parse(r.media || "[]"),
     }));
     res.json(data);
   } catch (err) {
@@ -39,7 +40,7 @@ router.post("/experiences", async (req, res) => {
     if (!role || !company || !period) return res.status(400).json({ error: "Data tidak lengkap" });
 
     const viaArr = Array.isArray(via) ? via : (via ? [via] : []);
-    const { companyLogo } = req.body;
+    const { companyLogo, media } = req.body;
     const [row] = await db.insert(workExperiencesTable).values({
       role,
       company,
@@ -49,10 +50,11 @@ router.post("/experiences", async (req, res) => {
       period,
       location: location || "",
       responsibilities: JSON.stringify(Array.isArray(responsibilities) ? responsibilities : []),
+      media: JSON.stringify(Array.isArray(media) ? media : []),
       sortOrder: sortOrder ?? 0,
     }).returning();
 
-    res.status(201).json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via) });
+    res.status(201).json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via), media: JSON.parse(row.media || "[]") });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });
@@ -70,7 +72,7 @@ router.put("/experiences/:id", async (req, res) => {
     if (existing.length === 0) return res.status(404).json({ error: "Data tidak ditemukan" });
 
     const viaArr = Array.isArray(via) ? via : (via ? [via] : []);
-    const { companyLogo } = req.body;
+    const { companyLogo, media } = req.body;
     const [row] = await db.update(workExperiencesTable).set({
       role,
       company,
@@ -80,10 +82,11 @@ router.put("/experiences/:id", async (req, res) => {
       period,
       location: location || "",
       responsibilities: JSON.stringify(Array.isArray(responsibilities) ? responsibilities : []),
+      media: JSON.stringify(Array.isArray(media) ? media : []),
       sortOrder: existing[0].sortOrder,
     }).where(eq(workExperiencesTable.id, id)).returning();
 
-    res.json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via) });
+    res.json({ ...row, responsibilities: JSON.parse(row.responsibilities), via: parseVia(row.via), media: JSON.parse(row.media || "[]") });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Gagal menyimpan" });

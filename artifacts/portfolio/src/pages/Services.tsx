@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Briefcase, Star, GraduationCap } from "lucide-react";
+import { CheckCircle2, Briefcase, Star, GraduationCap, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
@@ -199,6 +199,37 @@ export default function Pengalaman() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Media & Lampiran */}
+                {Array.isArray(exp.media) && exp.media.length > 0 && (
+                  <div className="mt-5 pt-4 border-t border-border">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">📎 Media & Lampiran</p>
+                    <div className="flex flex-wrap gap-2">
+                      {exp.media.map((m: any, i: number) => {
+                        if (m.type === "link") {
+                          return (
+                            <a key={i} href={m.url} target="_blank" rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs bg-primary/5 border border-primary/20 text-primary rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors font-medium">
+                              <ExternalLink size={11} />
+                              {m.label}
+                            </a>
+                          );
+                        }
+                        if (m.type === "image") {
+                          return (
+                            <button key={i} type="button"
+                              onClick={() => setLogoModal({ src: m.data, company: m.label })}
+                              className="flex items-center gap-1.5 text-xs bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-1.5 hover:bg-amber-100 transition-colors font-medium">
+                              <ImageIcon size={11} />
+                              {m.label}
+                            </button>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ))}
           </motion.div>
