@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, MessageCircle, CheckCircle2, Target, ExternalLink } from "lucide-react";
+import { Link } from "wouter";
+import { MapPin, Phone, Mail, MessageCircle, CheckCircle2, Target, ExternalLink, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { profile as staticProfile } from "@/data/data";
@@ -168,12 +169,17 @@ export default function About() {
             ))}
           </motion.div>
 
-          <motion.div className="flex justify-center" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.div className="flex flex-wrap justify-center gap-3" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <a href={`https://wa.me/${(p.phone ?? "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="rounded-full px-10 shadow-lg shadow-primary/20">
+              <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">
                 <MessageCircle size={18} className="mr-2" /> Chat via WhatsApp
               </Button>
             </a>
+            <Link href="/cv">
+              <Button size="lg" variant="outline" className="rounded-full px-8 border-primary text-primary hover:bg-primary/5">
+                <Download size={17} className="mr-2" /> Unduh CV
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </section>

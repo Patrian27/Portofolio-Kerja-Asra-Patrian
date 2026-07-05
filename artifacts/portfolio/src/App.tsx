@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 
 import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
@@ -12,6 +13,7 @@ import Pendidikan from "@/pages/Pendidikan";
 import Kontak from "@/pages/About";
 import Sertifikat from "@/pages/Sertifikat";
 import Admin from "@/pages/Admin";
+import CV from "@/pages/CV";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -19,10 +21,11 @@ const queryClient = new QueryClient();
 function Router() {
   const [location] = useLocation();
   const isAdmin = location === "/admin";
+  const isCV = location === "/cv";
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
-      {!isAdmin && <Navbar />}
+      {!isAdmin && !isCV && <Navbar />}
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
@@ -32,10 +35,12 @@ function Router() {
           <Route path="/kontak" component={Kontak} />
           <Route path="/sertifikat" component={Sertifikat} />
           <Route path="/admin" component={Admin} />
+          <Route path="/cv" component={CV} />
           <Route component={NotFound} />
         </Switch>
       </main>
-      {!isAdmin && <Footer />}
+      {!isAdmin && !isCV && <Footer />}
+      <WhatsAppFloat />
     </div>
   );
 }

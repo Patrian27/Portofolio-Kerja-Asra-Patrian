@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail, GraduationCap } from "lucide-react";
+import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail, GraduationCap, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { profile as staticProfile, workDocs } from "@/data/data";
@@ -184,6 +184,11 @@ export default function Home() {
               <Link href="/pengalaman">
                 <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 border-white/20 text-white hover:bg-white/20">
                   Pengalaman Saya
+                </Button>
+              </Link>
+              <Link href="/cv">
+                <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                  <Download size={17} className="mr-2" /> Unduh CV
                 </Button>
               </Link>
             </motion.div>
