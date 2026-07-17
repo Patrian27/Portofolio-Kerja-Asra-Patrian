@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Briefcase, Star, GraduationCap, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { profile } from "@/data/data";
+import { profile, experiences as staticExperiences, education as staticEducation } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
 
 const skillGroups = [
@@ -124,8 +124,8 @@ export default function Pengalaman() {
     staleTime: 30000,
   });
 
-  const experiences = apiExps ?? [];
-  const educationList = apiEducation ?? [];
+  const experiences = apiExps ?? staticExperiences;
+  const educationList = apiEducation ?? staticEducation;
   const softSkills: string[] = apiProfile?.softSkills ?? profile.softSkills;
   const additionalInfo: string[] = apiProfile?.additionalInfo ?? profile.additionalInfo;
 

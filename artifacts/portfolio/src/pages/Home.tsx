@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, Briefcase, Star, ChevronRight, MapPin, Phone, Mail, GraduationCap, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { profile as staticProfile, workDocs } from "@/data/data";
+import { profile as staticProfile, workDocs, experiences as staticExperiences, education as staticEducation } from "@/data/data";
 import { useQuery } from "@tanstack/react-query";
 
 const categoryLabel: Record<string, string> = {
@@ -63,8 +63,8 @@ export default function Home() {
 
   const profile = apiProfile ?? staticProfile;
   const profilePhoto = apiProfile?.profilePhoto || "/images/profile-nobg.png";
-  const experiences = apiExps ?? [];
-  const educationList = apiEducation ?? [];
+  const experiences = apiExps ?? staticExperiences;
+  const educationList = apiEducation ?? staticEducation;
 
   return (
     <div className="overflow-hidden">
@@ -163,9 +163,9 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              {profile.posisiDilamar.map((p) => (
-                <span key={p} className="bg-primary/20 text-primary border border-primary/30 text-sm px-3 py-1 rounded-full font-medium">
-                  Melamar: {p}
+              {profile.posisiDilamar.map((pos: string) => (
+                <span key={pos} className="bg-primary/20 text-primary border border-primary/30 text-sm px-3 py-1 rounded-full font-medium">
+                  Melamar: {pos}
                 </span>
               ))}
             </motion.div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Award, X, ZoomIn, Calendar, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { certificates as staticCertificates } from "@/data/data";
 
 interface Cert {
   id: number;
@@ -29,7 +30,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 export default function Sertifikat() {
   const [selected, setSelected] = useState<Cert | null>(null);
 
-  const { data: certificates = [] } = useQuery<Cert[]>({
+  const { data: certificates = staticCertificates } = useQuery<Cert[]>({
     queryKey: ["certificates"],
     queryFn: async () => {
       const res = await fetch("/api/certificates");

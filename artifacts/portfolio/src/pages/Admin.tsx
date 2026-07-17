@@ -360,7 +360,7 @@ function PengalamanTab({ pw }: { pw: string }) {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <TagsField label="Via / Vendor (tekan Enter untuk tambah, bisa lebih dari 1)" values={form.via} onChange={(v) => setForm({ ...form, via: v })} placeholder="cth: PT Mitra Kerja" />
+                <TagsField label="Via / Vendor (tekan Enter untuk tambah, bisa lebih dari 1)" values={form.via} onChange={(v) => setForm({ ...form, via: v })} />
               </div>
               <Field label="Periode *" value={form.period} onChange={(v) => setForm({ ...form, period: v })} placeholder="cth: 2022 – 2024" />
               <Field label="Kota / Lokasi" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="cth: Jakarta" />

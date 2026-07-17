@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { education as staticEducation } from "@/data/data";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -40,7 +41,7 @@ function ImageModal({ src, name, onClose }: { src: string; name: string; onClose
 export default function Pendidikan() {
   const [modal, setModal] = useState<{ src: string; name: string } | null>(null);
 
-  const { data: educationList = [], isLoading } = useQuery<any[]>({
+  const { data: educationList = staticEducation, isLoading } = useQuery<any[]>({
     queryKey: ["education"],
     queryFn: async () => {
       const res = await fetch("/api/education");

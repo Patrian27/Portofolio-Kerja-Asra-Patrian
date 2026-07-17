@@ -70,32 +70,57 @@ export const profile = {
 };
 
 export const education = [
-  { institution: "SMKN 1 Cirinten", major: "Akuntansi & Keuangan", year: "2015" },
-  { institution: "Universitas Pamulang", major: "Teknik Informatika", year: "2 Semester" },
+  { id: 1, institution: "SMK Negeri 1 Cirinten", major: "Akuntansi & Keuangan", year: "2015", schoolLogo: "", media: [] },
+  { id: 2, institution: "Universitas Pamulang", major: "Teknik Informatika", year: "2 Semester", schoolLogo: "", media: [] },
+];
+
+export const certificates = [
+  { id: 1, title: "Refreshment Frontliner Modul Layanan Kurir 2024", issuer: "PT Pos Indonesia (BUMN) — EDUPOS", date: "22 November 2024", category: "Operasional", image: "/images/sertifikat-pos-frontliner.jpg" },
+  { id: 2, title: "Sertifikat Pelatihan CV dan Interview", issuer: "JobStreet Career Hub by Seek", date: "10 Mei 2026", category: "Pengembangan Karir", image: "/images/sertifikat-cv-interview.jpg" },
+  { id: 3, title: "Sertifikat Pelatihan Dasar Microsoft Excel", issuer: "ZenLEAP x JobStreet by Seek", date: "14 Juli 2025", category: "Komputer", image: "/images/sertifikat-excel-dasar.jpg" },
+  { id: 4, title: "Jago Excel Kerjaan Lancar: Pelatihan Olah Data Antieror", issuer: "JobStreet Career Hub by Seek", date: "14 Juli 2025", category: "Komputer", image: "/images/sertifikat-excel-olahdata.jpg" },
+  { id: 5, title: "Fun Training: Peningkatan Layanan Prima", issuer: "SIMGROUP x JAGOTI — Hari Pelanggan Nasional", date: "02 September 2023", category: "Pelayanan", image: "/images/sertifikat-layanan-prima.jpg" },
+  { id: 6, title: "Webinar Trik Jitu Membangun Personal Branding", issuer: "SIMGROUP / PT Swakarya Insan Mandiri", date: "22 Desember 2022", category: "Pengembangan Karir", image: "/images/sertifikat-webinar-branding.jpg" },
+  { id: 7, title: "Training SPG/SPB REFI", issuer: "JAGOTI (Japan Grooming Training Indonesia)", date: "Februari 2022", category: "Pelayanan", image: "/images/sertifikat-jagoti.jpg" },
 ];
 
 export const experiences: Experience[] = [
   {
+    id: "exp-0",
+    role: "Office Support & Messenger",
+    company: "PT Dunia Tani Sejahtera (Parna Raya Group)",
+    period: "Jun 2026 - Sekarang",
+    location: "Jakarta Selatan, Area DKI Jakarta, Indonesia",
+    responsibilities: [
+      "Maintained office cleanliness, tidiness, and a comfortable working environment on a daily basis",
+      "Handled the secure and timely delivery of important documents and packages to the holding company (Parna Raya Group) and external clients",
+      "Supported daily office logistics, including meeting room preparation, hospitality for guests, and distribution of office supplies",
+      "Monitored and reported inventory needs or office facilities requiring maintenance",
+      "Assisted office staff with various indoor and outdoor operational tasks to improve team productivity",
+    ],
+  },
+  {
     id: "exp-1",
-    role: "Cleaning Service",
+    role: "Housekeeping Specialist",
     company: "PT Bank Central Asia Tbk (BCA)",
     via: "PT Usaha Mitra Sejahtera",
-    period: "2025 – 2026",
-    location: "Jakarta",
+    period: "Nov 2025 – Mei 2026",
+    location: "Tangerang, Banten, Indonesia",
     responsibilities: [
-      "Menjaga kebersihan area operasional dan pelayanan nasabah sesuai standar perbankan",
-      "Melakukan pembersihan lantai, kaca, area publik, dan fasilitas umum",
-      "Memastikan kebersihan dan higienitas sesuai SOP perusahaan",
-      "Mendukung kenyamanan dan keamanan nasabah serta staf",
+      "Bertanggung jawab menjaga kebersihan area operasional dan pelayanan nasabah sesuai SOP perbankan",
+      "Melakukan pembersihan menyeluruh pada area lantai, kaca, dan fasilitas publik di lingkungan Bank BCA",
+      "Mengelola, memantau, dan menjaga higienitas serta kerapihan lingkungan kerja harian",
+      "Berkoordinasi aktif untuk mendukung kenyamanan, keamanan, dan keselamatan nasabah serta staf kantor",
+      "Terbiasa bekerja di lingkungan perbankan dengan standar kebersihan tinggi, disiplin waktu, dan tanggung jawab penuh",
     ],
   },
   {
     id: "exp-2",
-    role: "Petugas Loket Agenpos Cikoleang 163531",
+    role: "Petugas Loket",
     company: "PT Pos Indonesia (Persero)",
-    via: "Agen Resmi",
-    period: "2024 – Sekarang",
-    location: "Cikoleang",
+    via: "Agenpos Cikoleang 16353S1 / 16353S2 (Usaha Mandiri)",
+    period: "Feb 2024 – Sekarang",
+    location: "Bogor, Jawa Barat, Indonesia",
     responsibilities: [
       "Melayani pelanggan dengan ramah dan profesional",
       "Mengelola transaksi dan pencatatan harian",
@@ -106,10 +131,10 @@ export const experiences: Experience[] = [
   {
     id: "exp-3",
     role: "Office Boy",
-    company: "PT Astra Auto Digital (SEVA)",
+    company: "PT Astra Auto Digital (Seva.id)",
     via: "PT Swakarya Insan Mandiri",
-    period: "2022 – 2025",
-    location: "Jakarta",
+    period: "Nov 2022 – Okt 2025",
+    location: "Jakarta Selatan, DKI Jakarta, Indonesia",
     responsibilities: [
       "Melakukan pembersihan dan perawatan area kantor",
       "Menyiapkan ruang meeting dan kebutuhan operasional harian",
@@ -120,10 +145,10 @@ export const experiences: Experience[] = [
   {
     id: "exp-4",
     role: "Messenger & Office Boy",
-    company: "PT Bank Sumut Cabang Jakarta",
+    company: "PT Bank Sumut",
     via: "PT Trans Dana Profitri",
-    period: "2020 – 2022",
-    location: "Jakarta",
+    period: "Jan 2020 – Okt 2022",
+    location: "Jakarta Selatan, Area DKI Jakarta, Indonesia",
     responsibilities: [
       "Mengelola dokumen masuk dan keluar perusahaan",
       "Melakukan pengiriman dokumen ke Bank Indonesia (BI)",
@@ -149,8 +174,8 @@ export const experiences: Experience[] = [
     id: "exp-6",
     role: "Driver Online (GrabBike, GrabExpress, GrabFood, GrabMart, GrabSameday)",
     company: "Grab",
-    period: "2018 – Sekarang",
-    location: "Bogor / Jabodetabek",
+    period: "Agu 2018 – Sekarang",
+    location: "Jabodetabek",
     responsibilities: [
       "Melayani pengantaran penumpang, barang, dan makanan melalui berbagai layanan Grab",
       "Mengutamakan keamanan, ketepatan waktu, dan kepuasan pelanggan",
@@ -161,8 +186,8 @@ export const experiences: Experience[] = [
     id: "exp-7",
     role: "Driver / Kurir Shopee",
     company: "Shopee Express",
-    period: "2024 – Sekarang",
-    location: "Bogor / Jabodetabek",
+    period: "Jan 2024 – Sekarang",
+    location: "Jabodetabek",
     responsibilities: [
       "Mengantar pesanan makanan dan paket instan dengan tepat waktu dan aman",
       "Terbiasa bekerja dengan aplikasi dan sistem logistik online",
